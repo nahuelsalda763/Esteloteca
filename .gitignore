@@ -1,0 +1,19 @@
+# Entorno virtual de Python
+.venv/
+
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Variables privadas
+.env
+
+# Configuración local de VS Code
+.vscode/
+
+# Base de datos local
+perfumes.db
+
+# Imágenes cargadas por usuarios
+uploads/
