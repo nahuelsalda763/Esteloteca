@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Mi colección de perfumes</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='/css/styles.css') }}"
+    >
+</head>
+
+<body>
+    <header class="encabezado">
+        <div class="contenedor">
+            <h1>Mi colección</h1>
+            <p>Perfumes registrados: {{ perfumes | length }}</p>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        <section
+            class="coleccion"
+            aria-label="Colección de perfumes"
+        >
+            {% for perfume in perfumes %}
+
+                <article class="tarjeta-perfume">
+                    <div class="imagen-perfume">
+                        <span>Sin imagen</span>
+                    </div>
+
+                    <div class="informacion-perfume">
+                        <p class="marca">
+                            {{ perfume.marca }}
+                        </p>
+
+                        <h2>
+                            {{ perfume.nombre }}
+                        </h2>
+
+                        <p>
+                            {{ perfume.concentracion }}
+                        </p>
+
+                        <p>
+                            {{ perfume.tamano_ml }} ml
+                        </p>
+
+                        <a
+                            class="boton"
+                            href="{{ perfume.fragrantica_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Ver en Fragrantica
+                        </a>
+                    </div>
+                </article>
+
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>

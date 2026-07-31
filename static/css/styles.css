@@ -1,0 +1,123 @@
+/* Configuración general */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #f6f4f1;
+    color: #2f2a27;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.contenedor {
+    width: min(100% - 32px, 1000px);
+    margin: 0 auto;
+}
+
+
+/* Encabezado */
+
+.encabezado {
+    padding: 24px 0;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ded9d4;
+}
+
+.encabezado h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+.encabezado p {
+    margin: 8px 0 0;
+    color: #625b56;
+}
+
+
+/* Colección */
+
+.coleccion {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    padding: 24px 0;
+}
+
+
+/* Tarjetas */
+
+.tarjeta-perfume {
+    overflow: hidden;
+    background-color: #ffffff;
+    border: 1px solid #ded9d4;
+    border-radius: 12px;
+}
+
+.imagen-perfume {
+    display: flex;
+    min-height: 180px;
+    align-items: center;
+    justify-content: center;
+    background-color: #ebe7e2;
+    color: #625b56;
+}
+
+.informacion-perfume {
+    padding: 16px;
+}
+
+.informacion-perfume h2 {
+    margin: 4px 0 12px;
+    font-size: 1.15rem;
+}
+
+.informacion-perfume p {
+    margin: 6px 0;
+}
+
+.marca {
+    color: #625b56;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+
+/* Botón */
+
+.boton {
+    display: block;
+    margin-top: 16px;
+    padding: 12px;
+    background-color: #332d29;
+    color: #ffffff;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.boton:hover {
+    background-color: #4a423d;
+}
+
+.boton:focus-visible {
+    outline: 3px solid #8a725f;
+    outline-offset: 3px;
+}
+
+
+/* Computadoras y tablets grandes */
+
+@media (min-width: 700px) {
+    .coleccion {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1000px) {
+    .coleccion {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
