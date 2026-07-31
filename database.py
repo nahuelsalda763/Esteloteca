@@ -36,27 +36,41 @@ def crear_tabla():
         conexion.close()
 
 
-def obtener_perfumes():
+def agregar_perfume(
+    marca: str,
+    nombre: str,
+    concentracion: str,
+    tamano_ml: int,
+    fragrantica_url: str | None,
+):
+    """
+    Guarda un nuevo perfume en la base de datos.
+    """
+
     conexion = conectar()
 
     try:
-        cursor = conexion.execute(
-            '''
-            SELECT
-                id,
+        consulta = """
+            INSERT INTO perfumes (
                 marca,
                 nombre,
                 concentracion,
-                tamano_ml
+                tamano_ml,
                 fragrantica_url
-            FROM perfumes 
-            ORDER BY id DESC
-            '''
+            )
+            VALUES (?, ?, ?, ?, ?)
+        """
+
+        valores = (
+            marca,
+            nombre,
+            concentracion,
+            tamano_ml,
+            fragrantica_url,
         )
 
-        filas = cursor.fetchall()
-
-        return [dict(fila) for fila in filas]
+        conexion.execute(consulta, valores)
+        conexion.commit()
 
     finally:
         conexion.close()
