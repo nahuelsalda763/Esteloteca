@@ -1,33 +1,48 @@
 from pathlib import Path
 import sqlite3
 
-#Carpeta donde se ubica este archivo
+
+# Carpeta principal del proyecto.
 BASE_DIR = Path(__file__).resolve().parent
 
-#ruta completa de la base de datos
+# Ruta completa del archivo de base de datos.
 DATABASE_PATH = BASE_DIR / "perfumes.db"
 
+
 def conectar():
+    """
+    Abre una conexión con SQLite.
+    """
+
     conexion = sqlite3.connect(DATABASE_PATH)
+
+    # Permite acceder a las columnas por nombre:
+    # fila["marca"], fila["nombre"], etc.
     conexion.row_factory = sqlite3.Row
 
     return conexion
 
+
 def crear_tabla():
+    """
+    Crea la tabla perfumes cuando todavía no existe.
+    """
+
     conexion = conectar()
 
     try:
         conexion.execute(
-            '''
+            """
             CREATE TABLE IF NOT EXISTS perfumes (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 marca TEXT NOT NULL,
                 nombre TEXT NOT NULL,
-                concentracion INTEGER NOT NULL,
+                concentracion TEXT NOT NULL,
                 tamano_ml INTEGER NOT NULL,
-                fragrantica_url TEXT
+                fragrantica_url TEXT,
+                imagen TEXT
             )
-            '''
+            """
         )
 
         conexion.commit()
@@ -36,41 +51,33 @@ def crear_tabla():
         conexion.close()
 
 
-def agregar_perfume(
-    marca: str,
-    nombre: str,
-    concentracion: str,
-    tamano_ml: int,
-    fragrantica_url: str | None,
-):
+def asegurar_columna_imagen():
     """
-    Guarda un nuevo perfume en la base de datos.
+    Agrega la columna imagen a las bases de datos
+    creadas antes de la Etapa 4.
     """
 
     conexion = conectar()
 
     try:
-        consulta = """
-            INSERT INTO perfumes (
-                marca,
-                nombre,
-                concentracion,
-                tamano_ml,
-                fragrantica_url
-            )
-            VALUES (?, ?, ?, ?, ?)
-        """
-
-        valores = (
-            marca,
-            nombre,
-            concentracion,
-            tamano_ml,
-            fragrantica_url,
+        cursor = conexion.execute(
+            "PRAGMA table_info(perfumes)"
         )
 
-        conexion.execute(consulta, valores)
-        conexion.commit()
+        columnas = {
+            fila["name"]
+            for fila in cursor.fetchall()
+        }
+
+        if "imagen" not in columnas:
+            conexion.execute(
+                """
+                ALTER TABLE perfumes
+                ADD COLUMN imagen TEXT
+                """
+            )
+
+            conexion.commit()
 
     finally:
         conexion.close()
@@ -93,7 +100,8 @@ def obtener_perfumes():
                 nombre,
                 concentracion,
                 tamano_ml,
-                fragrantica_url
+                fragrantica_url,
+                imagen
             FROM perfumes
             ORDER BY id DESC
             """
@@ -101,7 +109,57 @@ def obtener_perfumes():
 
         filas = cursor.fetchall()
 
-        return [dict(fila) for fila in filas]
+        return [
+            dict(fila)
+            for fila in filas
+        ]
+
+    finally:
+        conexion.close()
+
+
+def agregar_perfume(
+    marca: str,
+    nombre: str,
+    concentracion: str,
+    tamano_ml: int,
+    fragrantica_url: str | None,
+    imagen: str | None,
+):
+    """
+    Guarda un perfume nuevo en SQLite.
+    """
+
+    conexion = conectar()
+
+    try:
+        consulta = """
+            INSERT INTO perfumes (
+                marca,
+                nombre,
+                concentracion,
+                tamano_ml,
+                fragrantica_url,
+                imagen
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+        """
+
+        valores = (
+            marca,
+            nombre,
+            concentracion,
+            tamano_ml,
+            fragrantica_url,
+            imagen,
+        )
+
+        conexion.execute(
+            consulta,
+            valores,
+        )
+
+        conexion.commit()
 
     finally:
         conexion.close()

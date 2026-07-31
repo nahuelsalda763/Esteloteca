@@ -1,33 +1,90 @@
-from fastapi import FastAPI, Form, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from pathlib import Path
+import shutil
+from uuid import uuid4
+
+from fastapi import (
+    FastAPI,
+    File,
+    Form,
+    HTTPException,
+    Request,
+    UploadFile,
+)
+from fastapi.responses import (
+    HTMLResponse,
+    RedirectResponse,
+)
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import database
 
 
-app = FastAPI(title="Esteloteca")
+# Carpeta principal del proyecto.
+BASE_DIR = Path(__file__).resolve().parent
 
-#Aca indicamos donde se encuentran los archivos css, js e imagenes
+# Carpeta donde guardaremos las imágenes.
+UPLOAD_DIR = BASE_DIR / "uploads" / "perfumes"
 
-app.mount(
-    "/static",
-    StaticFiles(directory="static"),
-    name = "static",
+# Crea la carpeta si todavía no existe.
+UPLOAD_DIR.mkdir(
+    parents=True,
+    exist_ok=True,
 )
 
-#aca donde se encuentra las plantillas html
-templates = Jinja2Templates(directory="templates")
 
-#Aca se crea la tabla cuando inicia la aplicacion. SI esta existe, sqlite no la vuelve a crear
+app = FastAPI(title="Esteloteca")
+
+
+# Archivos CSS, JavaScript e imágenes estáticas.
+app.mount(
+    "/static",
+    StaticFiles(
+        directory=str(BASE_DIR / "static")
+    ),
+    name="static",
+)
+
+
+# Imágenes subidas por los usuarios.
+app.mount(
+    "/uploads",
+    StaticFiles(
+        directory=str(BASE_DIR / "uploads")
+    ),
+    name="uploads",
+)
+
+
+# Plantillas HTML.
+templates = Jinja2Templates(
+    directory=str(BASE_DIR / "templates")
+)
+
+
+# Crea la tabla si no existe.
 database.crear_tabla()
 
-def normalizar_url(url: str | None) -> str | None:
-    """
-    Limpia y normaliza una dirección web.
+# Agrega la columna imagen a bases anteriores.
+database.asegurar_columna_imagen()
 
-    Devuelve None cuando el campo está vacío.
-    Agrega https:// cuando el usuario no lo escribió.
+
+# Tipos de imágenes permitidos.
+TIPOS_IMAGEN_PERMITIDOS = {
+    "image/jpeg": ".jpg",
+    "image/png": ".png",
+    "image/webp": ".webp",
+}
+
+
+def normalizar_url(
+    url: str | None,
+) -> str | None:
+    """
+    Limpia el enlace de Fragrantica.
+
+    Devuelve None cuando está vacío.
+    Agrega https:// cuando falta.
     """
 
     if url is None:
@@ -35,31 +92,99 @@ def normalizar_url(url: str | None) -> str | None:
 
     url = url.strip()
 
-    if not url or url.lower() in {"none", "null"}:
+    if not url:
         return None
 
-    if not url.startswith(("http://", "https://")):
+    if not url.startswith(
+        ("http://", "https://")
+    ):
         url = f"https://{url}"
 
     return url
 
-@app.get("/", response_class = HTMLResponse)
-def mostrar_coleccion(request : Request):
+
+def guardar_imagen(
+    imagen: UploadFile | None,
+) -> str | None:
+    """
+    Guarda una imagen y devuelve su nombre.
+
+    Si no se seleccionó ninguna imagen,
+    devuelve None.
+    """
+
+    if imagen is None or not imagen.filename:
+        return None
+
+    extension = TIPOS_IMAGEN_PERMITIDOS.get(
+        imagen.content_type
+    )
+
+    if extension is None:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Formato de imagen no permitido. "
+                "Usá JPG, PNG o WebP."
+            ),
+        )
+
+    # Generamos un nombre único.
+    nombre_archivo = (
+        f"{uuid4().hex}{extension}"
+    )
+
+    ruta_archivo = (
+        UPLOAD_DIR / nombre_archivo
+    )
+
+    # Copiamos el archivo al almacenamiento local.
+    with ruta_archivo.open("wb") as destino:
+        shutil.copyfileobj(
+            imagen.file,
+            destino,
+        )
+
+    return nombre_archivo
+
+
+@app.get(
+    "/",
+    response_class=HTMLResponse,
+)
+def mostrar_coleccion(
+    request: Request,
+):
+    """
+    Muestra todos los perfumes guardados.
+    """
+
     perfumes = database.obtener_perfumes()
 
     return templates.TemplateResponse(
-        request = request,
-        name = "index.html",
-        context = {"perfumes" : perfumes},
+        request=request,
+        name="index.html",
+        context={
+            "perfumes": perfumes,
+        },
     )
 
-@app.get("/agregar", response_class = HTMLResponse)
-def mostrar_formulario(request: Request):
+
+@app.get(
+    "/agregar",
+    response_class=HTMLResponse,
+)
+def mostrar_formulario(
+    request: Request,
+):
+    """
+    Muestra el formulario de perfumes.
+    """
 
     return templates.TemplateResponse(
-        request = request,
-        name = "agregar.html",
-        context = {}
+        request=request,
+        name="agregar.html",
+        context={},
     )
 
 
@@ -70,8 +195,19 @@ def agregar_perfume(
     concentracion: str = Form(...),
     tamano_ml: int = Form(...),
     fragrantica_url: str | None = Form(None),
+    imagen: UploadFile | None = File(None),
 ):
-    enlace_normalizado = normalizar_url(fragrantica_url)
+    """
+    Recibe el formulario y guarda el perfume.
+    """
+
+    enlace_normalizado = normalizar_url(
+        fragrantica_url
+    )
+
+    nombre_imagen = guardar_imagen(
+        imagen
+    )
 
     database.agregar_perfume(
         marca=marca.strip(),
@@ -79,6 +215,7 @@ def agregar_perfume(
         concentracion=concentracion,
         tamano_ml=tamano_ml,
         fragrantica_url=enlace_normalizado,
+        imagen=nombre_imagen,
     )
 
     return RedirectResponse(

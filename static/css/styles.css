@@ -70,13 +70,27 @@ body {
     border-radius: 12px;
 }
 
-.imagen-perfume {
+.imagen-perfume{
     display: flex;
-    min-height: 180px;
+    height: 220px;
     align-items: center;
-    justify-content: center;
+    overflow: hidden;
     background-color: #ebe7e2;
     color: #625b56;
+}
+
+.foto-perfume {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    background-color: #ffffff;
+    object-fit: contain;
+}
+
+.campo input[type = "file"] {
+    padding: 10px;
+    background-color: #ffffff;
 }
 
 .informacion-perfume {

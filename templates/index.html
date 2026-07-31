@@ -45,8 +45,16 @@
             {% for perfume in perfumes %}
 
                 <article class="tarjeta-perfume">
-                    <div class="imagen-perfume">
-                        <span>Sin imagen</span>
+                    <div class ="imagen-perfume">
+                        {% if perfume.imagen %}
+                            <img 
+                                class = "foto-perfume"
+                                src = "/uploads/perfumes/{{ perfume.imagen }}"
+                                alt = "Frasco de {{ perfume.marca }} {{ perfume.nombre }}"
+                            >
+                            {% else %}
+                                <span>Sin imagen</span>
+                            {% endif %}
                     </div>
 
                     <div class="informacion-perfume">
