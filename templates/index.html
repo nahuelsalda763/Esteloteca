@@ -17,18 +17,21 @@
 </head>
 
 <body>
-    
-    <header class = "encabezado">
-        <div class = "contenedor encabezado-contenido">
-            <div>
 
+    <header class="encabezado">
+        <div class="contenedor encabezado-contenido">
+            <div>
                 <h1>Mi colección</h1>
 
                 <p>
-                    Perfumes regristrados: {{ perfumes | length }}
+                    Perfumes registrados: {{ perfumes | length }}
                 </p>
             </div>
-            <a class = "boton boton-agregar" href = "/agregar" >
+
+            <a
+                class="boton boton-agregar"
+                href="/agregar"
+            >
                 Agregar perfume
             </a>
         </div>
@@ -62,22 +65,23 @@
                         <p>
                             {{ perfume.tamano_ml }} ml
                         </p>
-                    {% if perfume.fragrantica_url %}
-                        <a
-                            class = "boton" 
-                            href = "{{ perfume.fragrantica_url }}"
-                            target = "_blank"
-                            rel = "noopener noreferrer"
-                        >
-                            ver en Fragrantica
-                    
-                        </a>
-                    {% endif %}
+                        
+                        {% if perfume.fragrantica_url %}
+                            <a
+                                class="boton"
+                                href="{{ perfume.fragrantica_url }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Ver en Fragrantica
+                            </a>
+                        {% endif %}
                     </div>
                 </article>
 
             {% endfor %}
         </section>
     </main>
+
 </body>
 </html>

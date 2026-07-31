@@ -3,51 +3,63 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+import database
+
 
 app = FastAPI(title="Esteloteca")
 
+#Aca indicamos donde se encuentran los archivos css, js e imagenes
 
-# Indicamos dónde se encuentran los archivos CSS,
-# JavaScript e imágenes.
 app.mount(
     "/static",
     StaticFiles(directory="static"),
-    name="static",
+    name = "static",
 )
 
-
-# Indicamos dónde se encuentran las plantillas HTML.
+#aca donde se encuentra las plantillas html
 templates = Jinja2Templates(directory="templates")
 
+#Aca se crea la tabla cuando inicia la aplicacion. SI esta existe, sqlite no la vuelve a crear
+database.crear_tabla()
 
-# Lista temporal de perfumes.
-# Más adelante será reemplazada por una base de datos SQLite.
-perfumes = []
-
-
-@app.get("/", response_class=HTMLResponse)
-def mostrar_coleccion(request: Request):
+def normalizar_url(url: str | None) -> str | None:
     """
-    Muestra la página principal con todos los perfumes.
+    Limpia y normaliza una dirección web.
+
+    Devuelve None cuando el campo está vacío.
+    Agrega https:// cuando el usuario no lo escribió.
     """
+
+    if url is None:
+        return None
+
+    url = url.strip()
+
+    if not url or url.lower() in {"none", "null"}:
+        return None
+
+    if not url.startswith(("http://", "https://")):
+        url = f"https://{url}"
+
+    return url
+
+@app.get("/", response_class = HTMLResponse)
+def mostrar_coleccion(request : Request):
+    perfumes = database.obtener_perfumes()
 
     return templates.TemplateResponse(
-        request=request,
-        name="index.html",
-        context={"perfumes": perfumes},
+        request = request,
+        name = "index.html",
+        context = {"perfumes" : perfumes},
     )
 
-
-@app.get("/agregar", response_class=HTMLResponse)
+@app.get("/agregar", response_class = HTMLResponse)
 def mostrar_formulario(request: Request):
-    """
-    Muestra el formulario para agregar un perfume.
-    """
 
     return templates.TemplateResponse(
-        request=request,
-        name="agregar.html",
-        context={},
+        request = request,
+        name = "agregar.html",
+        context = {}
     )
 
 
@@ -57,22 +69,17 @@ def agregar_perfume(
     nombre: str = Form(...),
     concentracion: str = Form(...),
     tamano_ml: int = Form(...),
-    fragrantica_url: str = Form(""),
+    fragrantica_url: str | None = Form(None),
 ):
-    """
-    Recibe los datos del formulario y agrega el perfume
-    a la lista temporal.
-    """
+    enlace_normalizado = normalizar_url(fragrantica_url)
 
-    nuevo_perfume = {
-        "marca": marca,
-        "nombre": nombre,
-        "concentracion": concentracion,
-        "tamano_ml": tamano_ml,
-        "fragrantica_url": fragrantica_url,
-    }
-
-    perfumes.append(nuevo_perfume)
+    database.agregar_perfume(
+        marca=marca.strip(),
+        nombre=nombre.strip(),
+        concentracion=concentracion,
+        tamano_ml=tamano_ml,
+        fragrantica_url=enlace_normalizado,
+    )
 
     return RedirectResponse(
         url="/",
