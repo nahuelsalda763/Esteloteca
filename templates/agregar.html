@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Agregar perfume | Esteloteca</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='/css/styles.css') }}"
+    >
+</head>
+
+<body>
+    <header class="encabezado">
+        <div class="contenedor">
+            <h1>Agregar perfume</h1>
+
+            <p>
+                Completá los datos de tu perfume.
+            </p>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        <section class="formulario-contenedor">
+            <form
+                class="formulario"
+                action="/agregar"
+                method="post"
+            >
+                <div class="campo">
+                    <label for="marca">
+                        Marca
+                    </label>
+
+                    <input
+                        type="text"
+                        id="marca"
+                        name="marca"
+                        placeholder="Ejemplo: Dior"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="nombre">
+                        Nombre
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombre"
+                        name="nombre"
+                        placeholder="Ejemplo: Homme Intense"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="concentracion">
+                        Concentración
+                    </label>
+
+                    <select
+                        id="concentracion"
+                        name="concentracion"
+                        required
+                    >
+                        <option value="">
+                            Seleccioná una opción
+                        </option>
+
+                        <option value="Eau de Cologne">
+                            Eau de Cologne
+                        </option>
+
+                        <option value="Eau de Toilette">
+                            Eau de Toilette
+                        </option>
+
+                        <option value="Eau de Parfum">
+                            Eau de Parfum
+                        </option>
+
+                        <option value="Parfum">
+                            Parfum
+                        </option>
+
+                        <option value="Extrait de Parfum">
+                            Extrait de Parfum
+                        </option>
+
+                        <option value="Otra">
+                            Otra
+                        </option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="tamano_ml">
+                        Tamaño en mililitros
+                    </label>
+
+                    <input
+                        type="number"
+                        id="tamano_ml"
+                        name="tamano_ml"
+                        min="1"
+                        placeholder="Ejemplo: 100"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="fragrantica_url">
+                        Enlace de Fragrantica
+                    </label>
+
+                    <input
+                        type="url"
+                        id="fragrantica_url"
+                        name="fragrantica_url"
+                        placeholder="https://www.fragrantica.es/perfume/..."
+                    >
+
+                    <small>
+                        Este campo es opcional.
+                    </small>
+                </div>
+
+                <div class = "acciones-formulario">
+                    
+                    <button
+                        class = "boton boton-primario"
+                        type = "submit"
+                    >
+                        guardar perfume
+                    </button>
+                    
+                    <a
+                        class = "boton boton-secundario"
+                        href = "/"
+                    >
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

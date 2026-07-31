@@ -1,4 +1,6 @@
-/* Configuración general */
+/* =========================
+   CONFIGURACIÓN GENERAL
+   ========================= */
 
 * {
     box-sizing: border-box;
@@ -17,7 +19,9 @@ body {
 }
 
 
-/* Encabezado */
+/* =========================
+   ENCABEZADO
+   ========================= */
 
 .encabezado {
     padding: 24px 0;
@@ -35,8 +39,17 @@ body {
     color: #625b56;
 }
 
+.encabezado-contenido {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
 
-/* Colección */
+
+/* =========================
+   COLECCIÓN
+   ========================= */
 
 .coleccion {
     display: grid;
@@ -46,7 +59,9 @@ body {
 }
 
 
-/* Tarjetas */
+/* =========================
+   TARJETAS DE PERFUMES
+   ========================= */
 
 .tarjeta-perfume {
     overflow: hidden;
@@ -85,17 +100,22 @@ body {
 }
 
 
-/* Botón */
+/* =========================
+   BOTONES
+   ========================= */
 
 .boton {
     display: block;
     margin-top: 16px;
-    padding: 12px;
+    padding: 12px 16px;
     background-color: #332d29;
     color: #ffffff;
+    border: none;
     border-radius: 8px;
+    font: inherit;
     text-align: center;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .boton:hover {
@@ -107,8 +127,88 @@ body {
     outline-offset: 3px;
 }
 
+.boton-agregar {
+    width: auto;
+    margin-top: 0;
+    white-space: nowrap;
+}
 
-/* Computadoras y tablets grandes */
+.boton-secundario {
+    background-color: #e8e3de;
+    color: #332d29;
+}
+
+.boton-secundario:hover {
+    background-color: #d8d1ca;
+}
+
+
+/* =========================
+   FORMULARIO
+   ========================= */
+
+.formulario-contenedor {
+    max-width: 600px;
+    margin: 32px auto;
+    padding: 24px;
+    background-color: #ffffff;
+    border: 1px solid #ded9d4;
+    border-radius: 12px;
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.campo label {
+    font-weight: bold;
+}
+
+.campo input,
+.campo select {
+    width: 100%;
+    min-height: 44px;
+    padding: 12px;
+    background-color: #ffffff;
+    color: #2f2a27;
+    border: 1px solid #aaa39d;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.campo input:focus,
+.campo select:focus {
+    border-color: #332d29;
+    outline: 3px solid #d8cec6;
+}
+
+.campo small {
+    color: #625b56;
+}
+
+.acciones-formulario {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.acciones-formulario .boton {
+    width: auto;
+    margin-top: 0;
+}
+
+
+/* =========================
+   TABLETS Y COMPUTADORAS
+   ========================= */
 
 @media (min-width: 700px) {
     .coleccion {
@@ -119,5 +219,34 @@ body {
 @media (min-width: 1000px) {
     .coleccion {
         grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================
+   TELÉFONOS PEQUEÑOS
+   ========================= */
+
+@media (max-width: 550px) {
+    .encabezado-contenido {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .boton-agregar {
+        width: 100%;
+    }
+
+    .formulario-contenedor {
+        margin: 24px auto;
+        padding: 20px;
+    }
+
+    .acciones-formulario {
+        flex-direction: column-reverse;
+    }
+
+    .acciones-formulario .boton {
+        width: 100%;
     }
 }
