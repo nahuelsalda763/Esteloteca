@@ -163,3 +163,73 @@ def agregar_perfume(
 
     finally:
         conexion.close()
+
+
+def obtener_perfume_por_id(perfume_id: int):
+    #Aca busca un perfume por su id, devuelve un diccionario si existe, y none si no se encuentra
+    conexion = conectar()
+
+    try:
+        cursor = conexion.execute(
+            """
+            SELECT
+                id,
+                marca,
+                nombre,
+                concentracion,
+                tamano_ml,
+                fragrantica_url,
+                imagen
+            FROM perfumes
+            WHERE id = ?
+            """,
+            (perfume_id,),
+        )
+
+        fila = cursor.fetchone()
+
+        if fila is None:
+            return None
+
+        return dict(fila)
+
+    finally:
+        conexion.close()
+
+def actualizar_perfume(
+        perfume_id: int,
+        marca: str,
+        nombre: str,
+        concentracion: str,
+        tamano_ml: int,
+        fragrantica_url: str | None,
+):
+    conexion = conectar()
+
+    try:
+        conexion.execute(
+            """
+            UPDATE perfumes
+            SET
+                marca = ?,
+                nombre = ?,
+                concentracion = ?,
+                tamano_ml = ?,
+                fragrantica_url = ?
+            WHERE id = ?
+            """,
+            (
+                marca,
+                nombre,
+                concentracion,
+                tamano_ml,
+                fragrantica_url,
+                perfume_id,
+            ),
+        )
+
+        conexion.commit()
+
+    finally:
+        conexion.close()
+        

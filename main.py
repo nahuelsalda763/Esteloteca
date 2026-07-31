@@ -222,3 +222,69 @@ def agregar_perfume(
         url="/",
         status_code=303,
     )
+
+
+@app.get(
+    "/editar/{perfume_id}",
+    response_class = HTMLResponse,
+)
+
+def mostrar_formulario_edicion(
+    request : Request,
+    perfume_id: int,
+):
+    perfume = database.obtener_perfume_por_id(
+        perfume_id
+    )
+
+    if perfume is None:
+        raise HTTPException(
+            status_code = 404,
+            detail = "Perfume no encontrado",
+        )
+
+    return templates.TemplateResponse(
+        request = request,
+        name = "editar.html",
+        context={
+            "perfume": perfume,
+        },
+    )
+
+
+@app.post("/editar/{perfume_id}")
+def editar_perfume(
+    perfume_id: int,
+    marca: str = Form(...),
+    nombre: str = Form(...),
+    concentracion: str = Form(...),
+    tamano_ml: int = Form(...),
+    fragrantica_url: str | None = Form(None),
+):
+    perfume = database.obtener_perfume_por_id(
+        perfume_id
+    )
+
+    if perfume is None:
+        raise HTTPException(
+            status_code = 404,
+            detail = "Perfume no encontrado",
+        )
+
+    enlace_normalizado = normalizar_url(
+        fragrantica_url
+    )
+
+    database.actualizar_perfume(
+        perfume_id = perfume_id,
+        marca = marca.strip(),
+        nombre = nombre.strip(),
+        concentracion = concentracion,
+        tamano_ml = tamano_ml,
+        fragrantica_url = enlace_normalizado,
+    )
+
+    return RedirectResponse(
+        url = "/",
+        status_code = 303,
+    )

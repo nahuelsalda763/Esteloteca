@@ -58,6 +58,7 @@
                     </div>
 
                     <div class="informacion-perfume">
+                        
                         <p class="marca">
                             {{ perfume.marca }}
                         </p>
@@ -74,6 +75,8 @@
                             {{ perfume.tamano_ml }} ml
                         </p>
                         
+                        <a class = "boton boton-editar" href = "/editar/{{ perfume.id }}"> Editar </a>
+
                         {% if perfume.fragrantica_url %}
                             <a
                                 class="boton"

@@ -264,3 +264,13 @@ body {
         width: 100%;
     }
 }
+
+.boton-editar {
+    background-color: #e8e3de;
+    color: #332d29;
+    border: 1px solid #aaa39d;
+}
+
+.boton-editar: hover {
+    background-color: #d8d1ca;
+}

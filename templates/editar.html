@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Editar perfume | Esteloteca</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='/css/styles.css') }}"
+    >
+</head>
+
+<body>
+    <header class="encabezado">
+        <div class="contenedor">
+            <h1>Editar perfume</h1>
+
+            <p>
+                Modificá los datos del perfume.
+            </p>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        <section class="formulario-contenedor">
+            <form
+                class="formulario"
+                action="/editar/{{ perfume.id }}"
+                method="post"
+            >
+                <div class="campo">
+                    <label for="marca">
+                        Marca
+                    </label>
+
+                    <input
+                        type="text"
+                        id="marca"
+                        name="marca"
+                        value="{{ perfume.marca }}"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="nombre">
+                        Nombre
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombre"
+                        name="nombre"
+                        value="{{ perfume.nombre }}"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="concentracion">
+                        Concentración
+                    </label>
+
+                    <select
+                        id="concentracion"
+                        name="concentracion"
+                        required
+                    >
+                        <option
+                            value="Eau de Cologne"
+                            {% if perfume.concentracion == "Eau de Cologne" %}
+                                selected
+                            {% endif %}
+                        >
+                            Eau de Cologne
+                        </option>
+
+                        <option
+                            value="Eau de Toilette"
+                            {% if perfume.concentracion == "Eau de Toilette" %}
+                                selected
+                            {% endif %}
+                        >
+                            Eau de Toilette
+                        </option>
+
+                        <option
+                            value="Eau de Parfum"
+                            {% if perfume.concentracion == "Eau de Parfum" %}
+                                selected
+                            {% endif %}
+                        >
+                            Eau de Parfum
+                        </option>
+
+                        <option
+                            value="Parfum"
+                            {% if perfume.concentracion == "Parfum" %}
+                                selected
+                            {% endif %}
+                        >
+                            Parfum
+                        </option>
+
+                        <option
+                            value="Extrait de Parfum"
+                            {% if perfume.concentracion == "Extrait de Parfum" %}
+                                selected
+                            {% endif %}
+                        >
+                            Extrait de Parfum
+                        </option>
+
+                        <option
+                            value="Otra"
+                            {% if perfume.concentracion == "Otra" %}
+                                selected
+                            {% endif %}
+                        >
+                            Otra
+                        </option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="tamano_ml">
+                        Tamaño en mililitros
+                    </label>
+
+                    <input
+                        type="number"
+                        id="tamano_ml"
+                        name="tamano_ml"
+                        min="1"
+                        value="{{ perfume.tamano_ml }}"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="fragrantica_url">
+                        Enlace de Fragrantica
+                    </label>
+
+                    <input
+                        type="url"
+                        id="fragrantica_url"
+                        name="fragrantica_url"
+                        value="{{ perfume.fragrantica_url or '' }}"
+                        placeholder="https://www.fragrantica.es/perfume/..."
+                    >
+
+                    <small>
+                        Este campo es opcional.
+                    </small>
+                </div>
+
+                <div class="acciones-formulario">
+                    <button
+                        class="boton boton-primario"
+                        type="submit"
+                    >
+                        Guardar cambios
+                    </button>
+
+                    <a
+                        class="boton boton-secundario"
+                        href="/"
+                    >
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
