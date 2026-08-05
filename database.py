@@ -232,4 +232,23 @@ def actualizar_perfume(
 
     finally:
         conexion.close()
-        
+
+#Eliminacion de perfumes
+def eliminar_perfume(perfume_id: int) -> bool:
+    conexion = conectar()
+
+    try:
+        cursor = conexion.execute(
+            '''
+            DELETE FROM perfumes
+            WHERE id = ?
+            ''',
+            (perfume_id,),
+        )
+
+        conexion.commit()
+
+        return cursor.rowcount > 0
+
+    finally:
+        conexion.close()

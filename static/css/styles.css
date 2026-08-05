@@ -263,6 +263,19 @@ body {
     .acciones-formulario .boton {
         width: 100%;
     }
+
+    .resumen-perfume-eliminar {
+        grid-template-columns: 1fr;
+    }
+
+    .imagen-eliminar{
+        width: 100%;
+        height: 220px;
+    }
+
+    .acciones-eliminar{
+        grid-template-columns: 1fr;
+    }
 }
 
 .boton-editar {
@@ -273,4 +286,99 @@ body {
 
 .boton-editar: hover {
     background-color: #d8d1ca;
+}
+
+
+.acciones-tarjeta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+
+}
+
+
+.acciones-tarjeta .boton{
+    margin-top: 0;
+}
+
+.boton-eliminar{
+    background-color: transparent;
+    color: #8b1e1e;
+    border: 1px solid #8b1e1e;
+}
+
+.boton-eliminar:hover{
+    background-color: #f7e9e9;
+}
+
+.confirmacion-eliminar {
+    max-width: 600px;
+    margin: 32px auto;
+    padding: 24px;
+    background-color: #ffffff;
+    border: 1px solid #ded9d4;
+    border-radius: 12px;
+}
+
+.resumen-perfume-eliminar {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 20px;
+    align-items: center;
+}
+
+.imagen-eliminar {
+    display: flex;
+    width: 140px;
+    height: 160px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #ebe7e2;
+    color: #625b56;
+    border-radius: 8px;
+
+}
+
+.mensaje-advertencia{
+    margin-top: 24px;
+    padding: 16px;
+    background-color: #fff3f3;
+    color: #6f1717;
+    border: 1px solid #d8a4a4;
+    border-radius: 8px;
+}
+
+.mensaje-advertencia p {
+    margin: 8px 0 0;
+}
+
+.acciones-eliminar {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(180px, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+
+}
+
+.accionex-eliminar .boton{
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 12px 18px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.boton-peligro{
+    background-color: #8b1e1e;
+    color: #ffffff;
+    border: 1px solid #8b1e1e;
+}
+
+.boton-peligro:hover {
+    background-color: #6f1717;
 }

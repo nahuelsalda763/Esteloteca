@@ -288,3 +288,63 @@ def editar_perfume(
         url = "/",
         status_code = 303,
     )
+
+@app.get(
+    "/eliminar/{perfume_id}",
+    response_class = HTMLResponse,
+)
+
+def mostrar_confirmacion_eliminacion(
+    request: Request,
+    perfume_id: int,
+):
+    perfume = database.obtener_perfume_por_id(
+        perfume_id
+    )
+
+    if perfume is None:
+        raise HTTPException(
+            status_code = 404,
+            detail = "Perfume no encontrado",
+        )
+
+    return templates.TemplateResponse(
+        request = request,
+        name = "eliminar.html",
+        context={
+            "perfume" : perfume,
+        }
+    )
+
+@app.post("/eliminar/{perfume_id}")
+def procesar_eliminacion( perfume_id : int,):
+    perfume = database.obtener_perfume_por_id(perfume_id)
+
+    if perfume is None:
+        raise HTTPException(
+            status_code = 404,
+            detail = "Perfume no encontrado",
+        )
+
+    eliminado = database.eliminar_perfume(perfume_id)
+
+    if not eliminado:
+        raise HTTPException(
+            status_code = 404,
+            detail = "No se pudo eliminar el perfume",
+        )
+
+    nombre_imagen = perfume["imagen"]
+
+    if nombre_imagen:
+        ruta_imagen = UPLOAD_DIR / nombre_imagen
+
+        ruta_imagen.unlink(
+            missing_ok = True
+        )
+
+    return RedirectResponse(
+        url = "/",
+        status_code = 303,
+    )
+

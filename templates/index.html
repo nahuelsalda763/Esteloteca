@@ -75,18 +75,32 @@
                             {{ perfume.tamano_ml }} ml
                         </p>
                         
-                        <a class = "boton boton-editar" href = "/editar/{{ perfume.id }}"> Editar </a>
-
-                        {% if perfume.fragrantica_url %}
+                        <div class="acciones-tarjeta">
                             <a
-                                class="boton"
-                                href="{{ perfume.fragrantica_url }}"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                class="boton boton-editar"
+                                href="/editar/{{ perfume.id }}"
                             >
-                                Ver en Fragrantica
+                                Editar
                             </a>
-                        {% endif %}
+
+                            {% if perfume.fragrantica_url %}
+                                <a
+                                    class="boton"
+                                    href="{{ perfume.fragrantica_url }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Ver en Fragrantica
+                                </a>
+                            {% endif %}
+
+                            <a
+                                class="boton boton-eliminar"
+                                href="/eliminar/{{ perfume.id }}"
+                            >
+                                Eliminar
+                            </a>
+                        </div>
                     </div>
                 </article>
 
