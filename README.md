@@ -1,27 +1,31 @@
-# Mi colección de perfumes
+## Esteloteca ##
 
-Desde que me introduje en el mundo de la perfumería, siempre quise tener una aplicación o página web desde la cual pudiera acceder a mi propia colección.
+**Esteloteca** es una aplicación web desarrollada en python para gestionar una colección personal de perfumes.
+Esta página nace como un **proyecto de práctica y aprendizaje**, como objetivo para aplicar de forma progresiva conceptos aprendidos durante mi cursada en la carrera de **Programador FullStack Python**, cursada en **EducacionIT**.
+Ademas, con esto comienzo a formalizar mi Portfolio personal como desarrollador, mostrando la evolución de una aplicacion desde una versión basica, hasta una aplicacion web completamente funcional. 
 
-Normalmente utilizo mucho una página llamada Fragrantica, que sirve para consultar las notas de los perfumes y cuenta con una sección llamada «Mi armario». Sin embargo, no me resulta cómoda de utilizar, ya que no está especialmente pensada para visualizar en detalle los perfumes que uno posee.
+# Objetivo del proyecto
+**ESteloteca** permite registrar y administrar una colección personal de perfumes desde una interfaz web simple, facil de usar para el público en general.
 
-A partir de esta necesidad, se me ocurrió desarrollar un proyecto a modo de práctica que pudiera resolver esta inquietud.
+Cada perfume puede almacenar información como:
+-Marca
+-Nombre
+-Concentración
+-Tamaño
+-Imagen
+-Enlace opcional a la web Fragrantica
 
-La idea principal consiste en crear una página web en la que los usuarios puedan agregar perfumes a su propia colección y visualizarla de forma local, incluyendo imágenes, descripciones y puntuaciones asignadas por ellos mismos.
 
-## Objetivo
+# Tecnologías
 
-La aplicación permitirá:
-- Ver la colección de perfumes.
-- Agregar perfumes con imágenes.
-- Editar y eliminar perfumes.
-- Buscar por nombre o marca.
-- Abrir la ficha del perfume en Fragrantica.
+**Backend**
+-Python / Python-multipart
+-FastAPI
+-Uvicorn
+-SQLite
 
-## Tecnologías
+**Frontend**
+-HTML5
+-CSS3
+-Jinja2
 
-- Python
-- FastAPI
-- HTML
-- CSS
-- JavaScript
-- SQLite

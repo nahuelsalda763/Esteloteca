@@ -149,23 +149,31 @@ def guardar_imagen(
 
 
 @app.get(
-    "/",
-    response_class=HTMLResponse,
+        "/",
+        response_class = HTMLResponse,
 )
+
 def mostrar_coleccion(
     request: Request,
+    buscar: str = "",
 ):
-    """
-    Muestra todos los perfumes guardados.
-    """
+    termino_busqueda = buscar.strip()
+    todos_los_perfumes = database.obtener_perfumes()
 
-    perfumes = database.obtener_perfumes()
+    if termino_busqueda:
+        perfumes = database.buscar_perfumes(
+            termino_busqueda
+        )
+    else:
+        perfumes = todos_los_perfumes
 
     return templates.TemplateResponse(
-        request=request,
-        name="index.html",
-        context={
+        request = request,
+        name = "index.html",
+        context ={
             "perfumes": perfumes,
+            "buscar": termino_busqueda,
+            "total_perfumes": len(todos_los_perfumes),
         },
     )
 

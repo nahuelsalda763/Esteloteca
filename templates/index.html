@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
 
@@ -16,15 +17,17 @@
     >
 </head>
 
+
 <body>
 
     <header class="encabezado">
         <div class="contenedor encabezado-contenido">
+
             <div>
                 <h1>Mi colección</h1>
 
                 <p>
-                    Perfumes registrados: {{ perfumes | length }}
+                    Perfumes registrados: {{ total_perfumes }}
                 </p>
             </div>
 
@@ -34,79 +37,227 @@
             >
                 Agregar perfume
             </a>
+
         </div>
     </header>
 
+
     <main class="contenedor">
+
+        <!-- Buscador -->
+        <section
+            class="buscador-contenedor"
+            aria-label="Buscar perfumes"
+        >
+            <form
+                class="buscador"
+                action="/"
+                method="get"
+            >
+
+                <label for="buscar">
+                    Buscar por marca o nombre
+                </label>
+
+                <div class="buscador-controles">
+
+                    <input
+                        type="search"
+                        id="buscar"
+                        name="buscar"
+                        value="{{ buscar }}"
+                        placeholder="Ejemplo: Sauvage"
+                    >
+
+                    <button
+                        class="boton boton-buscar"
+                        type="submit"
+                    >
+                        Buscar
+                    </button>
+
+                    {% if buscar %}
+                        <a
+                            class="boton boton-secundario"
+                            href="/"
+                        >
+                            Limpiar
+                        </a>
+                    {% endif %}
+
+                </div>
+
+            </form>
+        </section>
+
+
+        <!-- Información de búsqueda -->
+        {% if buscar %}
+            <p
+                class="resultado-busqueda"
+                aria-live="polite"
+            >
+                Resultados para
+                <strong>{{ buscar }}</strong>:
+                {{ perfumes | length }}
+            </p>
+        {% endif %}
+
+
+        <!-- Colección -->
         <section
             class="coleccion"
             aria-label="Colección de perfumes"
         >
-            {% for perfume in perfumes %}
 
-                <article class="tarjeta-perfume">
-                    <div class ="imagen-perfume">
-                        {% if perfume.imagen %}
-                            <img 
-                                class = "foto-perfume"
-                                src = "/uploads/perfumes/{{ perfume.imagen }}"
-                                alt = "Frasco de {{ perfume.marca }} {{ perfume.nombre }}"
-                            >
+            {% if perfumes %}
+
+                {% for perfume in perfumes %}
+
+                    <article class="tarjeta-perfume">
+
+                        <!-- Imagen -->
+                        <div class="imagen-perfume">
+
+                            {% if perfume.imagen %}
+
+                                <img
+                                    class="foto-perfume"
+                                    src="/uploads/perfumes/{{ perfume.imagen }}"
+                                    alt="Frasco de {{ perfume.marca }} {{ perfume.nombre }}"
+                                >
+
                             {% else %}
-                                <span>Sin imagen</span>
-                            {% endif %}
-                    </div>
 
-                    <div class="informacion-perfume">
-                        
-                        <p class="marca">
-                            {{ perfume.marca }}
-                        </p>
+                                <span>
+                                    Sin imagen
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- Información -->
+                        <div class="informacion-perfume">
+
+                            <p class="marca">
+                                {{ perfume.marca }}
+                            </p>
+
+                            <h2>
+                                {{ perfume.nombre }}
+                            </h2>
+
+                            <p>
+                                {{ perfume.concentracion }}
+                            </p>
+
+                            <p>
+                                {{ perfume.tamano_ml }} ml
+                            </p>
+
+
+                            <!-- Acciones -->
+                            <div class="acciones-tarjeta">
+
+                                <a
+                                    class="boton boton-editar"
+                                    href="/editar/{{ perfume.id }}"
+                                >
+                                    Editar
+                                </a>
+
+
+                                {% set url_fragrantica =
+                                    perfume.fragrantica_url
+                                    | default('', true)
+                                    | trim
+                                %}
+
+                                {% if
+                                    url_fragrantica
+                                    and url_fragrantica | lower not in ['none', 'null']
+                                %}
+
+                                    <a
+                                        class="boton"
+                                        href="{{ url_fragrantica }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Ver en Fragrantica
+                                    </a>
+
+                                {% endif %}
+
+
+                                <a
+                                    class="boton boton-eliminar"
+                                    href="/eliminar/{{ perfume.id }}"
+                                >
+                                    Eliminar
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+
+            {% else %}
+
+                <div class="coleccion-vacia">
+
+                    {% if buscar %}
 
                         <h2>
-                            {{ perfume.nombre }}
+                            No se encontraron perfumes
                         </h2>
 
                         <p>
-                            {{ perfume.concentracion }}
+                            No hay resultados para
+                            <strong>{{ buscar }}</strong>.
                         </p>
+
+                        <a
+                            class="boton"
+                            href="/"
+                        >
+                            Ver toda la colección
+                        </a>
+
+
+                    {% else %}
+
+                        <h2>
+                            Tu colección está vacía
+                        </h2>
 
                         <p>
-                            {{ perfume.tamano_ml }} ml
+                            Agregá tu primer perfume para comenzar.
                         </p>
-                        
-                        <div class="acciones-tarjeta">
-                            <a
-                                class="boton boton-editar"
-                                href="/editar/{{ perfume.id }}"
-                            >
-                                Editar
-                            </a>
 
-                            {% if perfume.fragrantica_url %}
-                                <a
-                                    class="boton"
-                                    href="{{ perfume.fragrantica_url }}"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    Ver en Fragrantica
-                                </a>
-                            {% endif %}
+                        <a
+                            class="boton"
+                            href="/agregar"
+                        >
+                            Agregar perfume
+                        </a>
 
-                            <a
-                                class="boton boton-eliminar"
-                                href="/eliminar/{{ perfume.id }}"
-                            >
-                                Eliminar
-                            </a>
-                        </div>
-                    </div>
-                </article>
+                    {% endif %}
 
-            {% endfor %}
+                </div>
+
+            {% endif %}
+
         </section>
+
     </main>
 
 </body>
+
 </html>

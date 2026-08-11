@@ -252,3 +252,40 @@ def eliminar_perfume(perfume_id: int) -> bool:
 
     finally:
         conexion.close()
+
+
+def buscar_perfumes(termino:str):
+    conexion = conectar()
+
+    try:
+        patron_busqueda = f"%{termino}%"
+        cursor = conexion.execute(
+            '''
+            SELECT
+                id,
+                marca,
+                nombre,
+                concentracion,
+                tamano_ml,
+                fragrantica_url,
+                imagen
+            FROM perfumes
+            WHERE marca COLLATE NOCASE LIKE ?
+                OR nombre COLLATE NOCASE LIKE ?
+            ORDER BY
+                marca COLLATE NOCASE,
+                nombre COLLATE NOCASE
+            ''',
+            (
+                patron_busqueda,
+                patron_busqueda,
+            ),
+        )
+
+        filas = cursor.fetchall()
+
+        return [ dict(fila) for fila in filas]
+
+    finally:
+        conexion.close()
+
