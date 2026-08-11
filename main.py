@@ -177,6 +177,25 @@ def mostrar_coleccion(
         },
     )
 
+@app.get(
+        "/perfume/{perfume_id}",
+        response_class=HTMLResponse,
+)
+def mostrar_detalle_perfume(request: Request, perfume_id: int,):
+    #aca mostramos la informacion completa del perfume
+    perfume = database.obtener_perfume_por_id(perfume_id)
+    if perfume is None:
+        raise HTTPException(
+            status_code = 404,
+            detail = "Perfume no encontrado",
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="detalle.html",
+        context={"perfume" : perfume,},
+    )
+
 
 @app.get(
     "/agregar",

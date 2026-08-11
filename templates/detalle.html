@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ perfume.marca}} {{ perfume.nombre }} | Esteloteca</title>
+    <link rel="stylesheet" href="{{ url_for('static', path = '/css/styles.css')}}">
+</head>
+<body>
+    <header class="encabezado">
+        <div class="contenedor encabezado-contenido">
+            <div>
+                <h1>Detalle del perfume</h1>
+                <p>Información de tu colección</p>
+            </div>
+            <a class = "boton boton-secundario" href="/">Volver a la colección</a>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        <article class="detalle-perfume">
+            <!-- Imagen -->
+            <div class="detalle-imagen">
+                    {% if perfume.imagen %}
+                    <img src="/uploads/perfumes/{{ perfume.imagen }}" alt="Frasco de {{ perfume.marca }} {{ perfume.nombre}}">
+
+                {% else %}
+                    <span>Sin imagen</span>
+
+                {% endif %}
+
+            </div>
+
+            <!-- Informacion -->
+            <div class="detalle-informacion">
+                <p class="marca">{{ perfume.marca }}</p>
+                <h2>{{ perfume.nombre }}</h2>
+                <d1 class="datos-perfume">
+                    <div>
+                        <dt>Concentración</dt>
+                        <dd>{{ perfume.concentracion }}</dd>
+                    </div>
+                    <div>
+                        <dt>Tamaño</dt>
+                        <dd>{{ perfume.tamano_ml }}</dd>
+                    </div>
+                </d1>
+                <div class="acciones-detalle">
+                    <a class="boton boton-editar" href="/editar/{{ perfume.id }}">Editar perfume</a>
+
+                    {% set url_fragrantica = perfume.fragrantica_url | default('',true) | trim %}
+
+                    {% if url_fragrantica and url_fragrantica | lower not in ['none', 'null'] %}
+                        <a class="boton" href="{{ url_fragrantica }}" target="_blank" rel="noopener noreferrer">Ver en Fragrantica</a>
+                    {% endif %}
+
+                    <a  class="boton boton-eliminar" href="/eliminar/{{ perfume.id }}">Eliminar perfume</a>
+                </div>
+            </div>
+        </article>
+    </main>
+
+</body>
+</html>

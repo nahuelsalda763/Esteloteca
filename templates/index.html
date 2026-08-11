@@ -161,14 +161,8 @@
                             <!-- Acciones -->
                             <div class="acciones-tarjeta">
 
-                                <a
-                                    class="boton boton-editar"
-                                    href="/editar/{{ perfume.id }}"
-                                >
-                                    Editar
-                                </a>
-
-
+                                <a class="boton boton-detalle" href="/perfume/{{ perfume.id }}">Ver detalle</a>
+                                <a class="boton boton-editar" href="/editar/{{ perfume.id }}">Editar</a>
                                 {% set url_fragrantica =
                                     perfume.fragrantica_url
                                     | default('', true)
