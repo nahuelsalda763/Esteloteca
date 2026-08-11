@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
 
@@ -16,25 +17,121 @@
     >
 </head>
 
+
 <body>
+
     <header class="encabezado">
         <div class="contenedor">
+
             <h1>Editar perfume</h1>
 
             <p>
                 Modificá los datos del perfume.
             </p>
+
         </div>
     </header>
 
+
     <main class="contenedor">
+
         <section class="formulario-contenedor">
+
             <form
                 class="formulario"
                 action="/editar/{{ perfume.id }}"
                 method="post"
+                enctype="multipart/form-data"
             >
+
+                <!-- IMAGEN ACTUAL -->
                 <div class="campo">
+
+                    <label>
+                        Imagen actual
+                    </label>
+
+                    <div class="imagen-actual-edicion">
+
+                        {% if perfume.imagen %}
+
+                            <img
+                                src="/uploads/perfumes/{{ perfume.imagen }}"
+                                alt="Frasco de {{ perfume.marca }} {{ perfume.nombre }}"
+                            >
+
+                        {% else %}
+
+                            <span>
+                                Este perfume todavía no tiene imagen.
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- AGREGAR O CAMBIAR IMAGEN -->
+                <div class="campo">
+
+                    <label for="imagen">
+
+                        {% if perfume.imagen %}
+                            Cambiar imagen
+                        {% else %}
+                            Agregar imagen
+                        {% endif %}
+
+                    </label>
+
+                    <input
+                        type="file"
+                        id="imagen"
+                        name="imagen"
+                        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                    >
+
+                    <small>
+                        Campo opcional. Si no seleccionás una imagen,
+                        se conservará la actual.
+                    </small>
+
+                </div>
+
+
+                <!-- ELIMINAR IMAGEN -->
+                {% if perfume.imagen %}
+
+                    <div class="campo campo-checkbox">
+
+                        <label for="eliminar_imagen">
+
+                            <input
+                                type="checkbox"
+                                id="eliminar_imagen"
+                                name="eliminar_imagen"
+                                value="true"
+                            >
+
+                            Eliminar imagen actual
+
+                        </label>
+
+                        <small>
+                            Al guardar los cambios, la imagen actual
+                            será eliminada del perfume.
+                        </small>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- MARCA -->
+                <div class="campo">
+
                     <label for="marca">
                         Marca
                     </label>
@@ -46,9 +143,13 @@
                         value="{{ perfume.marca }}"
                         required
                     >
+
                 </div>
 
+
+                <!-- NOMBRE -->
                 <div class="campo">
+
                     <label for="nombre">
                         Nombre
                     </label>
@@ -60,9 +161,13 @@
                         value="{{ perfume.nombre }}"
                         required
                     >
+
                 </div>
 
+
+                <!-- CONCENTRACIÓN -->
                 <div class="campo">
+
                     <label for="concentracion">
                         Concentración
                     </label>
@@ -72,6 +177,7 @@
                         name="concentracion"
                         required
                     >
+
                         <option
                             value="Eau de Cologne"
                             {% if perfume.concentracion == "Eau de Cologne" %}
@@ -80,6 +186,7 @@
                         >
                             Eau de Cologne
                         </option>
+
 
                         <option
                             value="Eau de Toilette"
@@ -90,6 +197,7 @@
                             Eau de Toilette
                         </option>
 
+
                         <option
                             value="Eau de Parfum"
                             {% if perfume.concentracion == "Eau de Parfum" %}
@@ -98,6 +206,7 @@
                         >
                             Eau de Parfum
                         </option>
+
 
                         <option
                             value="Parfum"
@@ -108,6 +217,7 @@
                             Parfum
                         </option>
 
+
                         <option
                             value="Extrait de Parfum"
                             {% if perfume.concentracion == "Extrait de Parfum" %}
@@ -117,6 +227,7 @@
                             Extrait de Parfum
                         </option>
 
+
                         <option
                             value="Otra"
                             {% if perfume.concentracion == "Otra" %}
@@ -125,10 +236,15 @@
                         >
                             Otra
                         </option>
+
                     </select>
+
                 </div>
 
+
+                <!-- TAMAÑO -->
                 <div class="campo">
+
                     <label for="tamano_ml">
                         Tamaño en mililitros
                     </label>
@@ -141,9 +257,13 @@
                         value="{{ perfume.tamano_ml }}"
                         required
                     >
+
                 </div>
 
+
+                <!-- FRAGRANTICA -->
                 <div class="campo">
+
                     <label for="fragrantica_url">
                         Enlace de Fragrantica
                     </label>
@@ -159,9 +279,13 @@
                     <small>
                         Este campo es opcional.
                     </small>
+
                 </div>
 
+
+                <!-- BOTONES -->
                 <div class="acciones-formulario">
+
                     <button
                         class="boton boton-primario"
                         type="submit"
@@ -171,13 +295,19 @@
 
                     <a
                         class="boton boton-secundario"
-                        href="/"
+                        href="/perfume/{{ perfume.id }}"
                     >
                         Cancelar
                     </a>
+
                 </div>
+
             </form>
+
         </section>
+
     </main>
+
 </body>
+
 </html>

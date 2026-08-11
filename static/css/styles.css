@@ -581,3 +581,47 @@ body {
     background-color: #3a323d;
 }
 
+/* Imagen en formulario de edicion */
+.imagen-actual-edicion{
+    display: flex;
+    width: 100%;
+    max-width: 320px;
+    height: 280px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #ebe7e2;
+    color: #625b56;
+    border: 1px solid #ded9d4;
+    border-radius: 10px;
+}
+
+.imagen-actual-edicion img{
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    background-color: #ffffff;
+    object-fit: contain;
+}
+
+/*checkbox de eliminacion de imagen */
+
+.campo-checkbox{
+    padding: 14px;
+    background-color: #fff3f3;
+    border: 1px solid #d8a4a4;
+    border-radius: 8px;
+}
+
+.campo-checkbox label{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: #6f1717;
+    cursor: pointer;
+}
+
+.campo-checkbox input{
+    width: auto;
+    margin: 0;
+}

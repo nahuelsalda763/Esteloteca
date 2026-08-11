@@ -147,6 +147,14 @@ def guardar_imagen(
 
     return nombre_archivo
 
+def eliminar_imagen_local(nombre_imagen: str | None,):
+    if not nombre_imagen:
+        return
+
+    ruta_imagen = UPLOAD_DIR / nombre_imagen
+    ruta_imagen.unlink(missing_ok = True)
+    
+
 
 @app.get(
         "/",
@@ -287,33 +295,94 @@ def editar_perfume(
     concentracion: str = Form(...),
     tamano_ml: int = Form(...),
     fragrantica_url: str | None = Form(None),
+    imagen: UploadFile | None = File(None),
+    eliminar_imagen: bool = Form(False),
 ):
+    """
+    Actualiza los datos de un perfume.
+
+    También permite conservar, reemplazar
+    o eliminar su imagen.
+    """
+
     perfume = database.obtener_perfume_por_id(
         perfume_id
     )
 
     if perfume is None:
         raise HTTPException(
-            status_code = 404,
-            detail = "Perfume no encontrado",
+            status_code=404,
+            detail="Perfume no encontrado",
+        )
+
+    # Evitamos una acción contradictoria:
+    # seleccionar una imagen nueva y pedir
+    # eliminar la imagen al mismo tiempo.
+    if (
+        eliminar_imagen
+        and imagen is not None
+        and imagen.filename
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "No podés seleccionar una imagen nueva "
+                "y eliminar la imagen al mismo tiempo."
+            ),
         )
 
     enlace_normalizado = normalizar_url(
         fragrantica_url
     )
 
+    imagen_actual = perfume["imagen"]
+
+    # Por defecto conservamos la imagen anterior.
+    imagen_final = imagen_actual
+
+    # Caso 1:
+    # El usuario quiere eliminar la imagen.
+    if eliminar_imagen:
+        imagen_final = None
+
+    # Caso 2:
+    # El usuario seleccionó una imagen nueva.
+    elif imagen is not None and imagen.filename:
+        imagen_final = guardar_imagen(
+            imagen
+        )
+
+    # Actualizamos primero SQLite.
     database.actualizar_perfume(
-        perfume_id = perfume_id,
-        marca = marca.strip(),
-        nombre = nombre.strip(),
-        concentracion = concentracion,
-        tamano_ml = tamano_ml,
-        fragrantica_url = enlace_normalizado,
+        perfume_id=perfume_id,
+        marca=marca.strip(),
+        nombre=nombre.strip(),
+        concentracion=concentracion,
+        tamano_ml=tamano_ml,
+        fragrantica_url=enlace_normalizado,
+        imagen=imagen_final,
     )
 
+    # Si quitamos la imagen anterior,
+    # eliminamos también su archivo.
+    if eliminar_imagen:
+        eliminar_imagen_local(
+            imagen_actual
+        )
+
+    # Si reemplazamos una imagen,
+    # eliminamos la anterior.
+    elif (
+        imagen_final != imagen_actual
+        and imagen_actual
+    ):
+        eliminar_imagen_local(
+            imagen_actual
+        )
+
     return RedirectResponse(
-        url = "/",
-        status_code = 303,
+        url=f"/perfume/{perfume_id}",
+        status_code=303,
     )
 
 @app.get(
@@ -363,12 +432,7 @@ def procesar_eliminacion( perfume_id : int,):
 
     nombre_imagen = perfume["imagen"]
 
-    if nombre_imagen:
-        ruta_imagen = UPLOAD_DIR / nombre_imagen
-
-        ruta_imagen.unlink(
-            missing_ok = True
-        )
+    eliminar_imagen_local(perfume["imagen"])
 
     return RedirectResponse(
         url = "/",

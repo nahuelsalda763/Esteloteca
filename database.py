@@ -195,7 +195,7 @@ def obtener_perfume_por_id(perfume_id: int):
 
     finally:
         conexion.close()
-
+'''
 def actualizar_perfume(
         perfume_id: int,
         marca: str,
@@ -232,7 +232,49 @@ def actualizar_perfume(
 
     finally:
         conexion.close()
+'''
 
+#Nueva Edicion de perfumes
+
+def actualizar_perfume(
+        perfume_id: int,
+        marca: str,
+        nombre: str,
+        concentracion: str,
+        tamano_ml: int,
+        fragrantica_url: str | None,
+        imagen: str | None,
+):
+    conexion = conectar()
+
+    try:
+        conexion.execute(
+            """
+            UPDATE perfumes
+            SET
+                marca = ?,
+                nombre = ?,
+                concentracion = ?,
+                tamano_ml = ?,
+                fragrantica_url = ?,
+                imagen = ?
+            WHERE id = ?
+            """,
+            (
+                marca,
+                nombre,
+                concentracion,
+                tamano_ml,
+                fragrantica_url,
+                imagen,
+                perfume_id,
+            ),
+        )
+        conexion.commit()
+    finally:
+        conexion.close()
+
+        
 #Eliminacion de perfumes
 def eliminar_perfume(perfume_id: int) -> bool:
     conexion = conectar()
