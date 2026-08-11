@@ -1,24 +1,12 @@
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Mi colección de perfumes</title>
-
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', path='/css/styles.css') }}"
-    >
-</head>
+{% extends "base.html" %}
 
 
-<body>
+{% block title %}
+    Mi colección | Esteloteca
+{% endblock %}
+
+
+{% block content %}
 
     <header class="encabezado">
         <div class="contenedor encabezado-contenido">
@@ -252,6 +240,4 @@
 
     </main>
 
-</body>
-
-</html>
+{% endblock %}
