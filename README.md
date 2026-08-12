@@ -30,3 +30,11 @@ Cada perfume puede almacenar información como:
 -CSS3
 -Jinja2
 
+**Despliegue**
+-Railway
+-HTTPS
+
+**DEMO**
+Actualmente Esteloteca se encuentra desplegada de forma DEMO V.0.2 como aplicacion web y PWA
+Puede visualizarse en la siguiente web: https://esteloteca-production.up.railway.app 
+
