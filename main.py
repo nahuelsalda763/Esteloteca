@@ -1,4 +1,4 @@
-from pathlib import Path
+#from pathlib import Path     ----- ANULADO, INNECESARIO
 import shutil
 from uuid import uuid4
 
@@ -19,8 +19,16 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import database
+from config import(
+    BASE_DIR,
+    UPLOAD_DIR,
+    UPLOAD_ROOT,
+)
 
 
+
+#Esto queda anulado, lo guardo por si reporto fallas en el sistema nuevo
+'''
 # Carpeta principal del proyecto.
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -32,6 +40,7 @@ UPLOAD_DIR.mkdir(
     parents=True,
     exist_ok=True,
 )
+'''
 
 
 app = FastAPI(title="Esteloteca")
@@ -51,9 +60,11 @@ app.mount(
 app.mount(
     "/uploads",
     StaticFiles(
-        directory=str(BASE_DIR / "uploads")
+        directory=str(
+            UPLOAD_ROOT
+        )
     ),
-    name="uploads",
+    name="uploads"
 )
 
 

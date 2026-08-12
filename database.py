@@ -1,12 +1,6 @@
-from pathlib import Path
 import sqlite3
+from config import DATABASE_PATH
 
-
-# Carpeta principal del proyecto.
-BASE_DIR = Path(__file__).resolve().parent
-
-# Ruta completa del archivo de base de datos.
-DATABASE_PATH = BASE_DIR / "perfumes.db"
 
 
 def conectar():
@@ -274,7 +268,7 @@ def actualizar_perfume(
     finally:
         conexion.close()
 
-        
+
 #Eliminacion de perfumes
 def eliminar_perfume(perfume_id: int) -> bool:
     conexion = conectar()
