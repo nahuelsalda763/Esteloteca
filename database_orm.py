@@ -10,15 +10,12 @@ engine = create_engine(
     DATABASE_URL,
 )
 
-#Prueba temporal
-def probar_lectura():
-    sentencia = select(Perfume)
+def obtener_perfumes():
+    sentencia = (
+        select(Perfume)
+        .order_by(Perfume.id.desc())
+    )
+
     with Session(engine) as session:
         perfumes = session.scalars(sentencia).all()
-        for perfume in perfumes:
-            print(
-                type(perfume),
-                perfume.id,
-                perfume.marca,
-                perfume.nombre,
-            )
+        return perfumes

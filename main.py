@@ -19,6 +19,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import database
+import database_orm
 from config import(
     BASE_DIR,
     UPLOAD_DIR,
@@ -178,7 +179,8 @@ def mostrar_coleccion(
     buscar: str = "",
 ):
     termino_busqueda = buscar.strip()
-    todos_los_perfumes = database.obtener_perfumes()
+   # todos_los_perfumes = database.obtener_perfumes()           -- Linea cambiada por la de abajo, se mantiene momentaneamente por posibles errores
+    todos_los_perfumes = (database_orm.obtener_perfumes())
 
     if termino_busqueda:
         perfumes = database.buscar_perfumes(
