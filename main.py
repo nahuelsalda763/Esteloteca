@@ -1,4 +1,4 @@
-#from pathlib import Path     ----- ANULADO, INNECESARIO
+
 import shutil
 from uuid import uuid4
 
@@ -24,24 +24,6 @@ from config import(
     UPLOAD_DIR,
     UPLOAD_ROOT,
 )
-
-
-
-#Esto queda anulado, lo guardo por si reporto fallas en el sistema nuevo
-'''
-# Carpeta principal del proyecto.
-BASE_DIR = Path(__file__).resolve().parent
-
-# Carpeta donde guardaremos las imágenes.
-UPLOAD_DIR = BASE_DIR / "uploads" / "perfumes"
-
-# Crea la carpeta si todavía no existe.
-UPLOAD_DIR.mkdir(
-    parents=True,
-    exist_ok=True,
-)
-'''
-
 
 app = FastAPI(title="Esteloteca")
 
