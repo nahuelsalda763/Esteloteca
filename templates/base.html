@@ -15,13 +15,17 @@
         {% endblock %}
     </title>
 
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', path='/css/styles.css') }}"
-    >
+    <!--PWA-->
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#2f2a27">
+    <link rel="icon" type="imagen/png" sizes="192x192" href="/static/icons/icon-192.png">
+
+    <!--CSS-->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
 
     {% block extra_head %}
     {% endblock %}
+
 </head>
 
 

@@ -23,6 +23,7 @@ Cada perfume puede almacenar información como:
 -FastAPI
 -Uvicorn
 -SQLite
+-PWA
 
 **Frontend**
 -HTML5

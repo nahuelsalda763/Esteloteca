@@ -1,0 +1,24 @@
+{
+    "id": "/",
+    "name": "Esteloteca",
+    "short_name": "Esteloteca",
+    "description": "Aplicación web para gestionar una colección personal de perfumes.",
+    "lang": "es",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "baclground_color": "#f6f4f1",
+    "theme_color": "#2f2a27",
+    "icons": [
+        {
+            "src": "/static/icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
