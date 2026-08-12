@@ -625,3 +625,40 @@ body {
     width: auto;
     margin: 0;
 }
+
+/*Offline*/
+.offline-contenedor{
+    display: flex;
+    width: min(90%, 500px);
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 40px 20px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.offline-logo{
+    width: 120px;
+    height: 120px;
+    margin-bottom: 24px;
+    border-radius: 24px;
+}
+
+.offline-contenedor h1{
+    margin-bottom: 6px;
+}
+
+.offline-contenedor h2{
+    margin-bottom: 6px;
+}
+
+.offline-contenedor p{
+    max-width: 420px;
+    line-height: 1.6;
+}
+
+.offline-contenedor .boton{
+    margin-top: 20px;
+}

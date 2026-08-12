@@ -13,6 +13,7 @@ from fastapi import (
 from fastapi.responses import (
     HTMLResponse,
     RedirectResponse,
+    FileResponse,
 )
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -69,6 +70,8 @@ database.crear_tabla()
 database.asegurar_columna_imagen()
 
 
+
+
 # Tipos de imágenes permitidos.
 TIPOS_IMAGEN_PERMITIDOS = {
     "image/jpeg": ".jpg",
@@ -76,6 +79,22 @@ TIPOS_IMAGEN_PERMITIDOS = {
     "image/webp": ".webp",
 }
 
+#SERVICE WORKER
+@app.get(
+        "/service-worker.js",
+        include_in_schema = False,
+)
+
+def obtener_service_worker():
+    return FileResponse(
+        BASE_DIR
+        / "static"
+        / "service-worker.js",
+        media_type="application/javascript",
+        headers = {
+            "Cache-Control": "no-cache",
+        },
+    )
 
 def normalizar_url(
     url: str | None,
