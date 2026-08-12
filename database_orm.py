@@ -19,3 +19,13 @@ def obtener_perfumes():
     with Session(engine) as session:
         perfumes = session.scalars(sentencia).all()
         return perfumes
+
+def obtener_perfume_por_id(perfume_id: int,):
+    sentencia =(
+        select(Perfume)
+        .where(Perfume.id == perfume_id)
+    )
+    with Session(engine) as session:
+        perfume = session.scalar(sentencia)
+        return perfume
+    
