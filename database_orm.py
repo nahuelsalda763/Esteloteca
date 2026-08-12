@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, select
+from sqlalchemy import (create_engine, or_, select,)
 from sqlalchemy.orm import Session
 
 from config import DATABASE_PATH
@@ -28,4 +28,28 @@ def obtener_perfume_por_id(perfume_id: int,):
     with Session(engine) as session:
         perfume = session.scalar(sentencia)
         return perfume
-    
+
+def buscar_perfumes(termino: str,):
+    termino = termino.strip()
+
+    if not termino:
+        return obtener_perfumes()
+
+    patron = f"%{termino}%"
+    sentencia = (
+        select(Perfume)
+        .where(
+            or_(
+                Perfume.marca.ilike(patron),
+                Perfume.nombre.ilike(patron),
+            )
+        )
+        .order_by(
+            Perfume.marca,
+            Perfume.nombre,
+        )
+    )
+
+    with Session(engine) as session:
+        perfumes = session.scalars(sentencia).all()
+        return perfumes
