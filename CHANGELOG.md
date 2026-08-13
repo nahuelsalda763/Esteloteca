@@ -18,6 +18,8 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 
 ### Cambiado
 
+- ALchemy pasa a ser la única capa de acceso a la base de datos.
+- La inicialización de las tablas ahora se realiza por modelos ORM
 - Los errores ya no se muestran como respuestas JSON al usuario de la web.
 - Todo el CRUD principal fue migrado desde sqlite3 a SQLAlchemy ORM
 - La eliminación de perfumes ahora es con Alchemy
@@ -72,6 +74,7 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Soporte PWA básico.
 - Deployment inicial en Railway.
 - Configuración para almacenamiento local o Railway mediante `config.py`.
+
 
 ### Tecnologías utilizadas
 

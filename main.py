@@ -18,8 +18,8 @@ from fastapi.responses import (
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-import database
 import database_orm
+
 from config import(
     BASE_DIR,
     UPLOAD_DIR,
@@ -132,14 +132,8 @@ async def manejar_error_interno(
         status_code=500,
     )
 
-
-# Crea la tabla si no existe.
-database.crear_tabla()
-
-# Agrega la columna imagen a bases anteriores.
-database.asegurar_columna_imagen()
-
-
+#inicializa las tablas definidas mediante los modelos ORM
+database_orm.inicializar_base_de_datos()
 
 
 # Tipos de imágenes permitidos.
@@ -282,7 +276,6 @@ def mostrar_coleccion(
         response_class=HTMLResponse,
 )
 def mostrar_detalle_perfume(request: Request, perfume_id: int,):
-    #perfume = database.obtener_perfume_por_id(perfume_id)
     perfume = database_orm.obtener_perfume_por_id(perfume_id)
     if perfume is None:
         raise HTTPException(
