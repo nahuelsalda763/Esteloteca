@@ -26,6 +26,10 @@ from config import(
     UPLOAD_ROOT,
 )
 
+from starlette.exceptions import (
+    HTTPException as StarletteHTTPException,
+)
+
 app = FastAPI(title="Esteloteca")
 
 
@@ -55,6 +59,78 @@ app.mount(
 templates = Jinja2Templates(
     directory=str(BASE_DIR / "templates")
 )
+
+@app.exception_handler(StarletteHTTPException)
+async def manejar_error_http(
+    request: Request,
+    exc: StarletteHTTPException,
+):
+    errores = {
+        400: (
+            "Solicitud incorrecta",
+            (
+                "No pudimos procesar la solicitud. "
+                "Revisá los datos e intentá nuevamente."
+            ),
+        ),
+        403: (
+            "Acceso no permitido",
+            (
+                "No tenes permiso para acceder "
+                "a este contenido."
+            ),
+        ),
+        404: (
+            "No encontrado",
+            (
+                "El contenido que estás buscando "
+                "no existe o ya no está disponible."
+            ),
+        ),
+        405: (
+            "Acción no permitida",
+            (
+                "Esta acción no está disponible "
+                "desde esta página."
+            ),
+        ),
+    }
+    titulo, mensaje = errores.get(
+        exc.status_code,
+        (
+            "Ocurrió un problema",
+            str(exc.detail),
+        ),
+    )
+    return templates.TemplateResponse(
+        request = request,
+        name = "error.html",
+        context ={
+            "titulo": titulo,
+            "mensaje": mensaje,
+            "status_code": exc.status_code,
+        },
+        status_code=exc.status_code,
+    )
+
+@app.exception_handler(Exception)
+async def manejar_error_interno(
+    request: Request,
+    exc: Exception,
+):
+    return templates.TemplateResponse(
+        request=request,
+        name="error.html",
+        context={
+            "titulo": "Algo salió mal",
+            "mensaje": (
+                "Ocurrió un error inesperado. "
+                "Intentá nuevamente más tarde."
+            ),
+            "status_code": 500,
+        },
+        status_code=500,
+    )
 
 
 # Crea la tabla si no existe.
@@ -270,7 +346,7 @@ def agregar_perfume(
     )
 
     return RedirectResponse(
-        url="/",
+        url="/?estado=agregado",
         status_code=303,
     )
 
@@ -305,6 +381,7 @@ def mostrar_formulario_edicion(
 
 @app.post("/editar/{perfume_id}")
 def editar_perfume(
+    request: Request,
     perfume_id: int,
     marca: str = Form(...),
     nombre: str = Form(...),
@@ -338,14 +415,30 @@ def editar_perfume(
         and imagen is not None
         and imagen.filename
     ):
-        raise HTTPException(
+        perfume_formulario = {
+            "id": perfume_id,
+            "marca": marca,
+            "nombre": nombre,
+            "concentracion": concentracion,
+            "tamano_ml": tamano_ml,
+            "fragrantica_url": fragrantica_url,
+            "imagen": perfume.imagen,
+        }
+        return templates.TemplateResponse(
+            request=request,
+            name="editar.html",
+            context={
+                "perfume": perfume_formulario,
+                "error":(
+                    "No podés seleccionar una imagen "
+                    "nueva y eliminar la actual "
+                    "al mismo tiempo."
+                ),
+            },
             status_code=400,
-            detail=(
-                "No podés seleccionar una imagen nueva "
-                "y eliminar la imagen al mismo tiempo."
-            ),
         )
 
+    
     enlace_normalizado = normalizar_url(
         fragrantica_url
     )
@@ -402,7 +495,10 @@ def editar_perfume(
         )
 
     return RedirectResponse(
-        url=f"/perfume/{perfume_id}",
+        url= (
+            f"/perfume/{perfume_id}"
+            "?estado=editado"
+        ),
         status_code=303,
     )
 
@@ -458,7 +554,7 @@ def procesar_eliminacion( perfume_id : int,):
     eliminar_imagen_local(nombre_imagen)
 
     return RedirectResponse(
-        url = "/",
+        url = "/?estado=eliminado",
         status_code = 303,
     )
 

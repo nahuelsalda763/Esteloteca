@@ -18,6 +18,7 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 
 ### Cambiado
 
+- Los errores ya no se muestran como respuestas JSON al usuario de la web.
 - Todo el CRUD principal fue migrado desde sqlite3 a SQLAlchemy ORM
 - La eliminación de perfumes ahora es con Alchemy
 - La edición de perfumes es ahora con Alchemy
@@ -47,7 +48,9 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 ## [0.2.0] - Demo
 
 ### Añadido
-
+- Páginas visuales para errores HTTP
+- Notificaciones visuales para altas, ediciones y eliminaciones exitosas.
+- Mensajes de validación dentro del formulario de edición.
 - Aplicación web creada con FastAPI.
 - Plantillas HTML mediante Jinja2.
 - Base de datos SQLite.

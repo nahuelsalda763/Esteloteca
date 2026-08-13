@@ -662,3 +662,81 @@ body {
 .offline-contenedor .boton{
     margin-top: 20px;
 }
+
+/* Errores */
+
+.error-contenedor{
+    display: flex;
+    width: min(90%, 520px);
+    min-height: 70vh;
+    margin: 0 auto;
+    padding: 40px 20px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.error-codigo{
+    margin-bottom: 8px;
+    color: #8b1e1e;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.error-contenedor h1{
+    margin: 0 0 12px;
+}
+
+.error-mensaje {
+    margin: 0;
+    color: #625b56;
+    line-height: 1.6;
+}
+
+.error-contenedor .boton {
+    width: auto;
+    margin-top: 24px;
+}
+
+.mensaje-error{
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    background-color: #fff3f3;
+    color: #6f1717;
+    border: 1px solid #d8a4a4;
+    border-radius: 8px;
+    line-height: 1.5;
+}
+
+
+/* notificaciones */
+
+.notificacion {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: min(calc(100% - 40%), 360px);
+    padding: 14px 18px;
+    border-radius: 8px;
+}
+
+.notificacion-exito{
+    background-color: #eef6ee;
+    color: #285b2a;
+    border: 1px solid #a9c9aa;
+}
+
+.notificacion-oculta{
+    display: none;
+}
+
+@media (max-width: 550px) {
+    .notificacion {
+        right: 16px;
+        left: 16px;
+        width: auto;
+    }
+}
