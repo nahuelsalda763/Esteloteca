@@ -40,7 +40,8 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 ## [0.2.0] - Demo
 
 ### Añadido
-
+- Alta de perfumes ahora usa SQLAlchemy
+- Inicio de migracion de las operaciones de escritura al ORM
 - Aplicación web creada con FastAPI.
 - Plantillas HTML mediante Jinja2.
 - Base de datos SQLite.

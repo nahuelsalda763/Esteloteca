@@ -53,3 +53,25 @@ def buscar_perfumes(termino: str,):
     with Session(engine) as session:
         perfumes = session.scalars(sentencia).all()
         return perfumes
+
+def agregar_perfume (
+        marca: str,
+        nombre: str,
+        concentracion: str,
+        tamano_ml: int,
+        fragrantica_url: str | None,
+        imagen: str | None,
+):
+    nuevo_perfume = Perfume(
+        marca = marca,
+        nombre = nombre,
+        concentracion = concentracion,
+        tamano_ml = tamano_ml,
+        fragrantica_url = fragrantica_url,
+        imagen = imagen,
+    )
+
+    with Session(engine) as session:
+        session.add( nuevo_perfume )
+
+        session.commit()

@@ -260,7 +260,7 @@ def agregar_perfume(
         imagen
     )
 
-    database.agregar_perfume(
+    database_orm.agregar_perfume(
         marca=marca.strip(),
         nombre=nombre.strip(),
         concentracion=concentracion,
