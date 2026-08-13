@@ -18,6 +18,8 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 
 ### Cambiado
 
+- Todo el CRUD principal fue migrado desde sqlite3 a SQLAlchemy ORM
+- La eliminación de perfumes ahora es con Alchemy
 - La edición de perfumes es ahora con Alchemy
 - EL formulario de edición trabaja directamente con objetos ORM
 - Alta de perfumes ahora usa SQLAlchemy

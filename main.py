@@ -410,13 +410,12 @@ def editar_perfume(
     "/eliminar/{perfume_id}",
     response_class = HTMLResponse,
 )
-
 def mostrar_confirmacion_eliminacion(
     request: Request,
     perfume_id: int,
 ):
-    perfume = database.obtener_perfume_por_id(
-        perfume_id
+    perfume = (
+        database_orm.obtener_perfume_por_id(perfume_id)
     )
 
     if perfume is None:
@@ -435,15 +434,20 @@ def mostrar_confirmacion_eliminacion(
 
 @app.post("/eliminar/{perfume_id}")
 def procesar_eliminacion( perfume_id : int,):
-    perfume = database.obtener_perfume_por_id(perfume_id)
+    perfume = (
+        database_orm.obtener_perfume_por_id(perfume_id)
+    )
 
     if perfume is None:
         raise HTTPException(
             status_code = 404,
             detail = "Perfume no encontrado",
         )
+    nombre_imagen = perfume.imagen
 
-    eliminado = database.eliminar_perfume(perfume_id)
+    eliminado = (
+        database_orm.eliminar_perfume(perfume_id)
+    )
 
     if not eliminado:
         raise HTTPException(
@@ -451,9 +455,7 @@ def procesar_eliminacion( perfume_id : int,):
             detail = "No se pudo eliminar el perfume",
         )
 
-    nombre_imagen = perfume["imagen"]
-
-    eliminar_imagen_local(perfume["imagen"])
+    eliminar_imagen_local(nombre_imagen)
 
     return RedirectResponse(
         url = "/",

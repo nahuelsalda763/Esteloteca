@@ -103,3 +103,19 @@ def actualizar_perfume(
         session.commit()
 
         return True
+
+def eliminar_perfume(
+        perfume_id: int,
+) -> bool:
+    with Session(engine) as session:
+        perfume = session.get(
+            Perfume,
+            perfume_id,
+        )
+        if perfume is None:
+            return False
+
+        session.delete( perfume )
+        session.commit()
+
+        return True
