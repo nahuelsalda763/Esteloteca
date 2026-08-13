@@ -17,7 +17,8 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Conexión de SQLAlchemy con la base de datos SQLite existente.
 
 ### Cambiado
-
+- El buscador de perfumes ahora utiliza SQLAlchemy.
+- Las principales operaciones de lectura fueron migradas desde `sqlite3` al ORM.
 - Limpieza de código innecesario en `main.py`.
 - El listado principal de perfumes ahora utiliza SQLAlchemy.
 - La consulta de detalle por ID ahora utiliza SQLAlchemy.
