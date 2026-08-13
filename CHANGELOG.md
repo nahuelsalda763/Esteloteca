@@ -17,6 +17,11 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Conexión de SQLAlchemy con la base de datos SQLite existente.
 
 ### Cambiado
+
+- La edición de perfumes es ahora con Alchemy
+- EL formulario de edición trabaja directamente con objetos ORM
+- Alta de perfumes ahora usa SQLAlchemy
+- Inicio de migracion de las operaciones de escritura al ORM
 - El buscador de perfumes ahora utiliza SQLAlchemy.
 - Las principales operaciones de lectura fueron migradas desde `sqlite3` al ORM.
 - Limpieza de código innecesario en `main.py`.
@@ -40,8 +45,7 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 ## [0.2.0] - Demo
 
 ### Añadido
-- Alta de perfumes ahora usa SQLAlchemy
-- Inicio de migracion de las operaciones de escritura al ORM
+
 - Aplicación web creada con FastAPI.
 - Plantillas HTML mediante Jinja2.
 - Base de datos SQLite.

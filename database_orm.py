@@ -75,3 +75,31 @@ def agregar_perfume (
         session.add( nuevo_perfume )
 
         session.commit()
+
+
+def actualizar_perfume(
+        perfume_id: int,
+        marca: str,
+        nombre: str,
+        concentracion: str,
+        tamano_ml: int,
+        fragrantica_url: str | None,
+        imagen: str | None,
+) -> bool:
+
+    with Session(engine) as session:
+        perfume = session.get (Perfume, perfume_id)
+
+        if perfume is None:
+            return False
+
+        perfume.marca = marca
+        perfume.nombre = nombre
+        perfume.concentracion = concentracion
+        perfume.tamano_ml = tamano_ml
+        perfume.fragrantica_url = fragrantica_url
+        perfume.imagen = imagen
+
+        session.commit()
+
+        return True

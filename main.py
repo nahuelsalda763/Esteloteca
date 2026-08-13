@@ -284,8 +284,8 @@ def mostrar_formulario_edicion(
     request : Request,
     perfume_id: int,
 ):
-    perfume = database.obtener_perfume_por_id(
-        perfume_id
+    perfume = (
+        database_orm.obtener_perfume_por_id(perfume_id)
     )
 
     if perfume is None:
@@ -321,10 +321,9 @@ def editar_perfume(
     o eliminar su imagen.
     """
 
-    perfume = database.obtener_perfume_por_id(
-        perfume_id
+    perfume = (
+        database_orm.obtener_perfume_por_id(perfume_id)
     )
-
     if perfume is None:
         raise HTTPException(
             status_code=404,
@@ -351,7 +350,7 @@ def editar_perfume(
         fragrantica_url
     )
 
-    imagen_actual = perfume["imagen"]
+    imagen_actual = perfume.imagen
 
     # Por defecto conservamos la imagen anterior.
     imagen_final = imagen_actual
@@ -368,16 +367,22 @@ def editar_perfume(
             imagen
         )
 
-    # Actualizamos primero SQLite.
-    database.actualizar_perfume(
-        perfume_id=perfume_id,
-        marca=marca.strip(),
-        nombre=nombre.strip(),
-        concentracion=concentracion,
-        tamano_ml=tamano_ml,
-        fragrantica_url=enlace_normalizado,
-        imagen=imagen_final,
+    actualizado = (
+        database_orm.actualizar_perfume(
+            perfume_id = perfume_id,
+            marca = marca.strip(),
+            nombre = nombre.strip(),
+            concentracion = concentracion,
+            tamano_ml = tamano_ml,
+            fragrantica_url = enlace_normalizado,
+            imagen = imagen_final,
+        )
     )
+
+    if not actualizado:
+        raise HTTPException( status_code = 404, detail="No se pudo actualizar el perfume",)
+
+
 
     # Si quitamos la imagen anterior,
     # eliminamos también su archivo.
