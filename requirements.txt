@@ -24,3 +24,5 @@ watchfiles==1.2.0
 websockets==17.0
 alembic==1.19.1
 Mako==1.4.1
+psycopg==3.3.4
+psycopg-binary==3.3.4
