@@ -8,6 +8,9 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 
 ### Añadido
 
+- PostgreSQL como nueva abse de datos preparadas para el entorno staging.
+- Psycopg3 como driver de postgreSQL para SQLAlchemy
+- Variable de referencia para la futura conexión entre Esteloteca y PostgreSQL en railway.
 - Alembic como sistema de migraciones de base de datos.
 - Migración inicial versionada del esquema de Esteloteca.
 - Migración para normalizar el esquema histórico de la tabla `perfumes`.
@@ -22,6 +25,8 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 
 ### Cambiado
 
+- La configuración de base de datos admite DATABASE_URL con sqlite como fallback local.
+- La conexion SQLAlchemy queda preparada para utilizar SQLite o PostgreSQL segun el entorno.
 - El entorno `staging` de Railway ejecuta `alembic upgrade head` antes de iniciar Uvicorn.
 - Alembic pasa a ser responsable de la creación y evolución del esquema de la base de datos.
 - Se eliminó el uso de `Base.metadata.create_all()` durante el inicio de la aplicación.

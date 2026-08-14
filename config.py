@@ -22,6 +22,30 @@ DATABASE_PATH =(
     STORAGE_DIR / "perfumes.db"
 )
 
+# URL de conexión a la base de datos.
+# Si existe DATABASE_URL se utiliza PostgreSQL.
+# Si no existe, Esteloteca continúa utilizando SQLite.
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace(
+            "postgres://",
+            "postgresql+psycopg://",
+            1,
+        )
+
+    elif DATABASE_URL.startswith("postgresql://"):
+        DATABASE_URL = DATABASE_URL.replace(
+            "postgresql://",
+            "postgresql+psycopg://",
+            1,
+        )
+
+else:
+    DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
+
 #carpeta raiz para los archivos subidos
 UPLOAD_ROOT =(
     STORAGE_DIR / "uploads"
