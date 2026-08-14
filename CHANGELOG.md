@@ -22,6 +22,7 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 
 ### Cambiado
 
+- El entorno `staging` de Railway ejecuta `alembic upgrade head` antes de iniciar Uvicorn.
 - Alembic pasa a ser responsable de la creación y evolución del esquema de la base de datos.
 - Se eliminó el uso de `Base.metadata.create_all()` durante el inicio de la aplicación.
 - Se normalizaron los tipos de columnas heredados de la antigua implementación con `sqlite3`.
