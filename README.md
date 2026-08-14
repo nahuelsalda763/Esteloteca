@@ -1,8 +1,12 @@
 ## Esteloteca ##
 
-**Esteloteca** es una aplicación web desarrollada en python para gestionar una colección personal de perfumes.
-Esta página nace como un **proyecto de práctica y aprendizaje**, como objetivo para aplicar de forma progresiva conceptos aprendidos durante mi cursada en la carrera de **Programador FullStack Python**, cursada en **EducacionIT**.
-Ademas, con esto comienzo a formalizar mi Portfolio personal como desarrollador, mostrando la evolución de una aplicacion desde una versión basica, hasta una aplicacion web completamente funcional. 
+## ¿Qué es Esteloteca?
+
+Nació como un proyecto personal para poner en práctica los conocimientos adquiridos durante mi formación como **Desarrollador Python Full Stack**.
+
+Inicialmente, fue pensada como una aplicación web sencilla para gestionar mi colección de perfumes. Con el tiempo, el proyecto evolucionó hacia una plataforma más completa, orientada a múltiples usuarios, con colecciones públicas y privadas, catálogo compartido, inteligencia artificial y sistemas de recomendación.
+
+Además de formar parte de mi portfolio, Esteloteca representa mi proceso de aprendizaje y la forma en que combino mis conocimientos de programación con el apoyo de herramientas de IA para desarrollar una aplicación cada vez más sólida y funcional.
 
 # Objetivo del proyecto
 **ESteloteca** permite registrar y administrar una colección personal de perfumes desde una interfaz web simple, facil de usar para el público en general.
