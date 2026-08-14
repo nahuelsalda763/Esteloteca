@@ -4,7 +4,20 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 
 ---
 
-## [Unreleased] - v0.3.0-dev
+## [Unreleased]
+
+### En desarrollo
+
+- Sistema multiusuario.
+- Autenticación y autorización.
+- COlecciones públicas y privadas.
+- Catálogo global de perfumes.
+- Integraciones de IA.
+- SUstema de recomendaciones.
+
+---
+
+## [0.3.0] - 14-08-26
 
 ### Añadido
 
@@ -45,14 +58,6 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - PostgreSQL pasa a ser la base de datos activa de Esteloteca en `staging`.
 - SQLite se mantiene como fallback para el entorno local.
 
-### En desarrollo
-
-- Sistema multiusuario.
-- Autenticación y autorización.
-- Colecciones públicas y privadas.
-- Catálogo global de perfumes.
-- Integraciones de IA.
-- Sistema de recomendaciones.
 
 ---
 
