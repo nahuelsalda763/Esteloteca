@@ -8,6 +8,9 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 
 ### Añadido
 
+- Alembic como sistema de migraciones de base de datos.
+- Migración inicial versionada del esquema de Esteloteca.
+- Migración para normalizar el esquema histórico de la tabla `perfumes`.
 - Rama `develop` para el desarrollo de la nueva versión.
 - Entorno Staging separado de Production.
 - SQLAlchemy como ORM.
@@ -16,23 +19,20 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Modelo ORM `Perfume`.
 - Conexión de SQLAlchemy con la base de datos SQLite existente.
 
+
 ### Cambiado
 
-- ALchemy pasa a ser la única capa de acceso a la base de datos.
-- La inicialización de las tablas ahora se realiza por modelos ORM
-- Los errores ya no se muestran como respuestas JSON al usuario de la web.
-- Todo el CRUD principal fue migrado desde sqlite3 a SQLAlchemy ORM
-- La eliminación de perfumes ahora es con Alchemy
-- La edición de perfumes es ahora con Alchemy
-- EL formulario de edición trabaja directamente con objetos ORM
-- Alta de perfumes ahora usa SQLAlchemy
-- Inicio de migracion de las operaciones de escritura al ORM
+- Alembic pasa a ser responsable de la creación y evolución del esquema de la base de datos.
+- Se eliminó el uso de `Base.metadata.create_all()` durante el inicio de la aplicación.
+- Se normalizaron los tipos de columnas heredados de la antigua implementación con `sqlite3`.
+- SQLAlchemy pasa a ser la única capa de acceso a la base de datos.
+- Todo el CRUD principal fue migrado desde `sqlite3` a SQLAlchemy ORM.
+- El listado principal y la consulta de detalle por ID ahora utilizan SQLAlchemy.
 - El buscador de perfumes ahora utiliza SQLAlchemy.
-- Las principales operaciones de lectura fueron migradas desde `sqlite3` al ORM.
-- Limpieza de código innecesario en `main.py`.
-- El listado principal de perfumes ahora utiliza SQLAlchemy.
-- La consulta de detalle por ID ahora utiliza SQLAlchemy.
-- Se inició la migración progresiva desde `sqlite3` hacia SQLAlchemy.
+- El alta, edición y eliminación de perfumes ahora utilizan SQLAlchemy.
+- El formulario de edición trabaja directamente con objetos ORM.
+- Los errores ya no se muestran como respuestas JSON al usuario de la web.
+- Se realizó limpieza de código innecesario en `main.py`.
 
 ### En desarrollo
 

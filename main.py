@@ -132,8 +132,7 @@ async def manejar_error_interno(
         status_code=500,
     )
 
-#inicializa las tablas definidas mediante los modelos ORM
-database_orm.inicializar_base_de_datos()
+
 
 
 # Tipos de imágenes permitidos.

@@ -2,18 +2,14 @@ from sqlalchemy import (create_engine, or_, select,)
 from sqlalchemy.orm import Session
 
 from config import DATABASE_PATH
-from models import (
-    Base,
-    Perfume,
-)
+from models import Perfume
 
 DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
 
 engine = create_engine(
     DATABASE_URL,
 )
-def inicializar_base_de_datos():
-    Base.metadata.create_all( bind=engine)
+
 
     
 def obtener_perfumes():
