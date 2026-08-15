@@ -21,6 +21,10 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Catálogo global de perfumes.
 - Integraciones de IA.
 - SUstema de recomendaciones.
+- Formulario web para el registro de usuarios.
+- Persistencia de nuevas cuentas mediante sqlalchemy ORM.
+- Validaciones de user, correo, y confirmacion de contraseña durante el registro.
+- Hash de contraseñas mediante pwdlib y Argon2 antes de almacenarlas.
 
 ---
 

@@ -1,6 +1,7 @@
 
 import shutil
 from uuid import uuid4
+import re
 
 from fastapi import (
     FastAPI,
@@ -19,6 +20,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import database_orm
+from security import generar_password_hash
 
 from config import(
     BASE_DIR,
@@ -132,7 +134,34 @@ async def manejar_error_interno(
         status_code=500,
     )
 
+def email_valido(email:str) -> bool:
+    patron=(
+        r"^[^@\s]+@"
+        r"[^@\s]+\."
+        r"[^@\s]+$"
+    )
+    return bool(
+        re.fullmatch(patron, email)
+    )
 
+def renderizar_registro(
+        request: Request,
+        *,
+        error: str | None = None,
+        datos: dict | None = None,
+        creado: bool = False,
+        status_code: int = 200,
+):
+    return templates.TemplateResponse(
+        request=request,
+        name="registro.html",
+        context={
+            "error":error,
+            "datos":datos,
+            "creado":creado,
+        },
+        status_code=status_code,
+    )
 
 
 # Tipos de imágenes permitidos.
@@ -141,6 +170,7 @@ TIPOS_IMAGEN_PERMITIDOS = {
     "image/png": ".png",
     "image/webp": ".webp",
 }
+
 
 #SERVICE WORKER
 @app.get(
@@ -550,3 +580,155 @@ def procesar_eliminacion( perfume_id : int,):
         status_code = 303,
     )
 
+@app.get(
+    "/registro",
+    response_class=HTMLResponse,
+)
+
+def mostrar_registro(
+    request: Request,
+    creado: bool = False,
+):
+    return renderizar_registro(
+        request,
+        creado=creado,
+    )
+
+@app.post(
+    "/registro",
+    response_class=HTMLResponse,
+)
+
+def registrar_usuario(
+    request: Request,
+    username: str = Form(...),
+    email: str = Form(...),
+    password: str = Form(...),
+    password_confirm: str = Form(...),
+):
+    username = (
+        username
+        .strip()
+        .lower()
+    )
+
+    email = (
+        email
+        .strip()
+        .lower()
+    )
+
+    datos = {
+        "username": username,
+        "email": email,
+    }
+
+    if not(
+        3 <= len(username) <= 50
+    ):
+        return renderizar_registro(
+            request,
+            error=(
+                "El nombre de usuario debe "
+                "tener entre 3 y 50 caracteres."
+            ),
+            datos=datos,
+            status_code=400,
+        )
+
+    if not re.fullmatch(
+        r"[a-z0-9_]+",
+        username,
+    ):
+        return renderizar_registro(
+            request,
+            error=(
+                "El nombre de usuario solo "
+                "puede contener letras, "
+                "números y guion bajo"
+            ),
+            datos=datos,
+            status_code=400,
+        )
+
+    if len(email) > 255:
+        return renderizar_registro(
+            request,
+            error=(
+                "EL correo electrónico "
+                "es demasiado largo."
+            ),
+            datos=datos,
+            status_code=400,
+        )
+
+    if not (
+        8 <= len(password) <= 128
+    ):
+        return renderizar_registro(
+            request,
+            error=(
+                "La contraseña debe tener "
+                "entre 8 y 128 caracteres"
+            ),
+            datos=datos,
+            status_code=400,
+        )
+
+    if password != password_confirm:
+        return renderizar_registro(
+            request,
+            error=(
+                "Las contraseñas "
+                "no coinciden."
+            ),
+            datos=datos,
+            status_code=400,
+        )
+
+    usuario_existente = (
+        database_orm
+        .obtener_usuario_por_username(username)
+    )
+
+    if usuario_existente:
+        return renderizar_registro(
+            request,
+            error=(
+                "Ese nombre de usuario "
+                "ya está registrado."
+            ),
+            datos=datos,
+            status_code=409,
+        )
+
+    email_existente = (
+        database_orm
+        .obtener_usuario_por_email(email)
+    )
+
+    if email_existente:
+        return renderizar_registro(
+            request,
+            error=(
+                "Ese correo electrónico "
+                "ya está registrado."
+            ),
+            datos=datos,
+            status_code=409,
+        )
+
+    hash_password = (
+        generar_password_hash(password)
+    )
+
+    database_orm.agregar_usuario(
+        username=username,
+        email=email,
+        password_hash=hash_password,
+    )
+
+    return RedirectResponse(
+        url="/registro?creado=true",
+        status_code=303,
+    )

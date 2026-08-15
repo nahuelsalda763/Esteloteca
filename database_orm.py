@@ -2,7 +2,7 @@ from sqlalchemy import (create_engine, or_, select,)
 from sqlalchemy.orm import Session
 
 from config import DATABASE_URL
-from models import Perfume
+from models import Perfume, User
 
 
 
@@ -121,3 +121,40 @@ def eliminar_perfume(
         session.commit()
 
         return True
+
+
+def obtener_usuario_por_username(username: str):
+        sentencia = (
+            select(User)
+            .where(User.username == username)
+        )
+
+        with Session(engine) as session:
+            return session.scalar(sentencia)
+
+def obtener_usuario_por_email(email: str):
+    sentencia = (
+        select(User)
+        .where(User.email == email)
+    )
+
+    with Session(engine) as session:
+        return session.scalar(sentencia)
+
+def agregar_usuario(
+        username: str,
+        email: str,
+        password_hash: str,
+):
+    usuario = User(
+        username=username,
+        email=email,
+        password_hash=password_hash,
+    )
+
+    with Session(engine) as session:
+        session.add(usuario)
+        session.commit()
+        session.refresh(usuario)
+
+        return usuario

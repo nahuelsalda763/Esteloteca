@@ -740,3 +740,18 @@ body {
         width: auto;
     }
 }
+
+/* Registro de usuarios */
+
+.mensaje-exito{
+    margin-top: 24px;
+    padding: 16px;
+    background-color: #eef7ee;
+    color: #2452ba;
+    border: 1px solid #9bc5a0;
+    border-radius: 8px;
+}
+
+.mensaje-exito{
+    margin: 8px 0 0;
+}
