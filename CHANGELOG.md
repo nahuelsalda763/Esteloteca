@@ -9,6 +9,9 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 ## Añadido
 
 - Documentacion de arquitectura para la transición de Esteloteca hacia un sistema multiusuario.
+- Modelo ORM user para representar las cuentas de usuario.
+- Tabla users con identificadores, credenciales almacenadas mediante hash, estado de cuenta y fecha de creación de la misma.
+-Migración de ALembic para incorporar la tabla users.
 
 ### En desarrollo
 
