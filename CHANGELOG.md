@@ -4,7 +4,11 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 
 ---
 
-## [Unreleased]
+## [Unreleased] - v0.4.0-dev
+
+## Añadido
+
+- Documentacion de arquitectura para la transición de Esteloteca hacia un sistema multiusuario.
 
 ### En desarrollo
 
