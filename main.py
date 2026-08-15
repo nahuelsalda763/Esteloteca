@@ -20,7 +20,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import database_orm
-from security import generar_password_hash
+from security import (
+    generar_password_hash, validar_password
+)
 
 from config import(
     BASE_DIR,
@@ -661,19 +663,16 @@ def registrar_usuario(
             datos=datos,
             status_code=400,
         )
+    error_password = validar_password(password)
 
-    if not (
-        8 <= len(password) <= 128
-    ):
+    if error_password:
         return renderizar_registro(
             request,
-            error=(
-                "La contraseña debe tener "
-                "entre 8 y 128 caracteres"
-            ),
+            error=error_password,
             datos=datos,
             status_code=400,
         )
+
 
     if password != password_confirm:
         return renderizar_registro(
