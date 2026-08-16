@@ -27,3 +27,4 @@ Mako==1.4.1
 psycopg==3.3.4
 psycopg-binary==3.3.4
 pwdlib[argon2]==0.3.1
+itsdangerous==2.2.0

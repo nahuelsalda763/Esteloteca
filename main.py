@@ -21,7 +21,9 @@ from fastapi.templating import Jinja2Templates
 
 import database_orm
 from security import (
-    generar_password_hash, validar_password
+    generar_password_hash,
+    validar_password,
+    verificar_password,
 )
 
 from config import(
@@ -33,9 +35,29 @@ from config import(
 from starlette.exceptions import (
     HTTPException as StarletteHTTPException,
 )
+from starlette.middleware.sessions import (SessionMiddleware)
+
+from config import(
+    SESSION_COOKIE_SECURE,
+    SESSION_MAX_AGE,
+    SESSION_SECRET_KEY,
+)
 
 app = FastAPI(title="Esteloteca")
 
+if not SESSION_SECRET_KEY:
+    raise RuntimeError(
+        "SESSION_SECRET_KEY no está configurada."
+    )
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=SESSION_SECRET_KEY,
+    session_cookie="esteloteca_session",
+    max_age=SESSION_MAX_AGE,
+    same_site="lax",
+    https_only=SESSION_COOKIE_SECURE,
+)
 
 # Archivos CSS, JavaScript e imágenes estáticas.
 app.mount(
@@ -161,6 +183,23 @@ def renderizar_registro(
             "error":error,
             "datos":datos,
             "creado":creado,
+        },
+        status_code=status_code,
+    )
+
+def renderizar_login(
+        request: Request,
+        *,
+        error: str | None = None,
+        datos: dict | None = None,
+        status_code: int = 200,
+):
+    return templates.TemplateResponse(
+        request=request,
+        name="login.html",
+        context={
+            "error":error,
+            "datos":datos,
         },
         status_code=status_code,
     )
@@ -729,5 +768,94 @@ def registrar_usuario(
 
     return RedirectResponse(
         url="/registro?creado=true",
+        status_code=303,
+    )
+
+@app.get(
+    "/login",
+    response_class=HTMLResponse,
+)
+
+def mostrar_login(
+    request: Request,
+):
+    return renderizar_login(request)
+
+@app.post(
+    "/login",
+    response_class=HTMLResponse,
+)
+
+def iniciar_sesion(
+    request: Request,
+    username: str = Form(...),
+    password: str = Form(...),
+):
+    username = (
+        username
+        .strip()
+        .lower()
+    )
+    datos = {
+        "username": username,
+    }
+
+    usuario = (
+        database_orm
+        .obtener_usuario_por_username(username)
+    )
+
+    if (
+        usuario is None or not usuario.is_active
+    ):
+        return renderizar_login(
+            request,
+            error=(
+                "El nombre de usuario "
+                "o la contraseña son incorrectos."
+            ),
+            datos=datos,
+            status_code=401,
+        )
+
+    password_correcta = (
+        verificar_password(
+            password,
+            usuario.password_hash,
+        )
+    )
+
+    if not password_correcta:
+        return renderizar_login(
+            request,
+            error=(
+                "Eñ nombre de usuario "
+                "o la contraseña son incorrectos."
+            ),
+            datos=datos,
+            status_code=401,
+        )
+
+    request.session.clear()
+
+    request.session[
+        "user_id"
+    ] = usuario.id
+
+    return RedirectResponse(
+        url="/login",
+        status_code=303,
+    )
+
+@app.post(
+    "/logout",
+)
+def cerrar_sesion(
+    request: Request
+):
+    request.session.clear()
+
+    return RedirectResponse(
+        url="/login?estado=cerrada",
         status_code=303,
     )

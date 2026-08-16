@@ -14,10 +14,13 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Migración de ALembic para incorporar la tabla users.
 - Verificación segura de contraseñas contra hashes Argon2.
 - Política centralizada de validación de contraseñas.
+- Inicio y cierre de sesión para usuarios registrados.
+- Sesiones web mediante cookies firmadas y configuracion segura por entorno.
 
 ### Cambiado
 
 - La validación de contraseñas del registro fue centralizada en "security.py"
+- El registro de usuarios ahora enlaza directamente con el inicio de sesión.
 
 
 ### En desarrollo

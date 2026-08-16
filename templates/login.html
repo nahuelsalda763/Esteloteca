@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Iniciar sesión | Esteloteca
+{% endblock %}
+
+
+{% block content %}
+
+<header class="encabezado">
+    <div class="contenedor">
+        <div class="encabezado-contenido">
+            <div>
+                <h1>Esteloteca</h1>
+                <p>Iniciar sesión</p>
+            </div>
+
+            <a
+                href="/"
+                class="boton boton-secundario"
+            >
+                Volver
+            </a>
+        </div>
+    </div>
+</header>
+
+
+<main class="contenedor">
+
+    <section class="formulario-contenedor">
+
+        {% if request.session.get("user_id") %}
+
+            <h2>Sesión iniciada</h2>
+
+            <div class="mensaje-exito">
+                <strong>
+                    Estás autenticado correctamente.
+                </strong>
+
+                <p>
+                    La sesión permanecerá activa
+                    mientras la cookie sea válida.
+                </p>
+            </div>
+
+
+            <form
+                method="post"
+                action="/logout"
+                class="formulario"
+            >
+                <div class="acciones-formulario">
+
+                    <a
+                        href="/"
+                        class="boton boton-secundario"
+                    >
+                        Ir al inicio
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="boton"
+                    >
+                        Cerrar sesión
+                    </button>
+
+                </div>
+            </form>
+
+
+        {% else %}
+
+            <h2>Iniciar sesión</h2>
+
+            <p>
+                Ingresá con tu nombre de usuario
+                y contraseña.
+            </p>
+
+
+            {% if error %}
+
+                <div class="mensaje-advertencia">
+                    <strong>
+                        No se pudo iniciar sesión.
+                    </strong>
+
+                    <p>{{ error }}</p>
+                </div>
+
+            {% endif %}
+
+
+            {% set estado = request.query_params.get("estado") %}
+
+            {% if estado == "cerrada" %}
+
+                <div class="mensaje-exito">
+                    <strong>
+                        Sesión cerrada correctamente.
+                    </strong>
+                </div>
+
+            {% endif %}
+
+
+            <form
+                method="post"
+                action="/login"
+                class="formulario"
+            >
+
+                <div class="campo">
+                    <label for="username">
+                        Nombre de usuario
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        maxlength="50"
+                        autocomplete="username"
+                        value="{{ datos.username if datos else '' }}"
+                        required
+                    >
+                </div>
+
+
+                <div class="campo">
+                    <label for="password">
+                        Contraseña
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        maxlength="128"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+
+                <div class="acciones-formulario">
+
+                    <a
+                        href="/registro"
+                        class="boton boton-secundario"
+                    >
+                        Crear cuenta
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="boton"
+                    >
+                        Iniciar sesión
+                    </button>
+
+                </div>
+
+            </form>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+{% endblock %}

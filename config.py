@@ -66,3 +66,21 @@ UPLOAD_DIR.mkdir(
     parents=True,
     exist_ok=True,
 )
+
+SESSION_SECRET_KEY = os.getenv(
+    "SESSION_SECRET_KEY"
+)
+
+SESSION_COOKIE_SECURE = (
+    os.getenv(
+        "SESSION_COOKIE_SECURE",
+        "false",
+    )
+    .strip()
+    .lower()
+    == "true"
+)
+
+SESSION_MAX_AGE =(
+    60 * 60 * 24 * 7
+)
