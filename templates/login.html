@@ -78,7 +78,7 @@
 
             <p>
                 Ingresá con tu nombre de usuario
-                y contraseña.
+                o correo y contraseña.
             </p>
 
 
@@ -115,17 +115,17 @@
             >
 
                 <div class="campo">
-                    <label for="username">
-                        Nombre de usuario
+                    <label for="identificador">
+                        Usuario o correo electrónico
                     </label>
 
-                    <input
+                    <input 
                         type="text"
-                        id="username"
-                        name="username"
-                        maxlength="50"
+                        id="identificador"
+                        name="identificador"
+                        maxlength="255"
                         autocomplete="username"
-                        value="{{ datos.username if datos else '' }}"
+                        value="{{ datos.identificador if datos else '' }}"
                         required
                     >
                 </div>

@@ -16,11 +16,14 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Política centralizada de validación de contraseñas.
 - Inicio y cierre de sesión para usuarios registrados.
 - Sesiones web mediante cookies firmadas y configuracion segura por entorno.
+- Configuración local persistente de las variables de sesión mediante `.env` y plantilla `.env.example`.
+- Protección de las operaciones de alta, edición y eliminación de perfumes para requerir una sesión autenticada.
 
 ### Cambiado
 
 - La validación de contraseñas del registro fue centralizada en "security.py"
 - El registro de usuarios ahora enlaza directamente con el inicio de sesión.
+- El inicio de sesión ahora permite autenticarse tanto con nombre de usuario como con correo electrónico.
 
 
 ### En desarrollo

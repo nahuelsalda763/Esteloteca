@@ -141,6 +141,25 @@ def obtener_usuario_por_email(email: str):
     with Session(engine) as session:
         return session.scalar(sentencia)
 
+def obtener_usuario_por_identificador(identificador: str):
+    sentencia = (
+        select(User)
+        .where(
+            or_(
+                User.username == identificador,
+                User.email == identificador,
+            )
+        )
+    )
+
+    with Session(engine) as session:
+        return session.scalar(sentencia)
+
+def obtener_usuario_por_id(user_id: int):
+    with Session(engine) as session:
+        return session.get(User, user_id)
+    
+
 def agregar_usuario(
         username: str,
         email: str,
@@ -158,3 +177,4 @@ def agregar_usuario(
         session.refresh(usuario)
 
         return usuario
+

@@ -1,8 +1,16 @@
 from pathlib import Path
 import os
 
+from dotenv import load_dotenv
+
 #Carpeta principal
 BASE_DIR = Path(__file__).resolve().parent
+
+load_dotenv(
+    BASE_DIR / ".env"
+)
+
+
 
 RAILWAY_VOLUME_MOUNT_PATH = os.getenv(
     "RAILWAY_VOLUME_MOUNT_PATH"
@@ -67,9 +75,7 @@ UPLOAD_DIR.mkdir(
     exist_ok=True,
 )
 
-SESSION_SECRET_KEY = os.getenv(
-    "SESSION_SECRET_KEY"
-)
+SESSION_SECRET_KEY = os.getenv("SESSION_SECRET_KEY")
 
 SESSION_COOKIE_SECURE = (
     os.getenv(

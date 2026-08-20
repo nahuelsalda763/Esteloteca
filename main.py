@@ -205,6 +205,29 @@ def renderizar_login(
     )
 
 
+def obtener_usuario_actual(request: Request,):
+    user_id = request.session.get("user_id")
+    if user_id is None:
+        return None
+
+    usuario = (
+        database_orm
+        .obtener_usuario_por_id(user_id)
+    )
+
+    if (
+        usuario is None
+        or not usuario.is_active
+    ):
+        request.session.clear()
+        return None
+
+    return usuario
+
+def requerir_usuario(request: Request):
+    return obtener_usuario_actual(request)
+
+
 # Tipos de imágenes permitidos.
 TIPOS_IMAGEN_PERMITIDOS = {
     "image/jpeg": ".jpg",
@@ -371,6 +394,14 @@ def mostrar_formulario(
     Muestra el formulario de perfumes.
     """
 
+    usuario_actual = requerir_usuario(request)
+
+    if usuario_actual is None:
+        return RedirectResponse(
+            url="/login",
+            status_code=303,
+        )
+
     return templates.TemplateResponse(
         request=request,
         name="agregar.html",
@@ -380,6 +411,7 @@ def mostrar_formulario(
 
 @app.post("/agregar")
 def agregar_perfume(
+    request : Request,
     marca: str = Form(...),
     nombre: str = Form(...),
     concentracion: str = Form(...),
@@ -390,6 +422,14 @@ def agregar_perfume(
     """
     Recibe el formulario y guarda el perfume.
     """
+
+    usuario_actual = requerir_usuario(request)
+
+    if usuario_actual is None:
+        return RedirectResponse(
+            url="/login",
+            status_code=303,
+        )
 
     enlace_normalizado = normalizar_url(
         fragrantica_url
@@ -423,6 +463,13 @@ def mostrar_formulario_edicion(
     request : Request,
     perfume_id: int,
 ):
+    usuario_actual = requerir_usuario(request)
+    if usuario_actual is None:
+        return RedirectResponse(
+            url="/login",
+            status_code=303,
+        )
+    
     perfume = (
         database_orm.obtener_perfume_por_id(perfume_id)
     )
@@ -461,6 +508,13 @@ def editar_perfume(
     o eliminar su imagen.
     """
 
+    usuario_actual = requerir_usuario(request)
+    if usuario_actual is None:
+        return RedirectResponse(
+            url="/login",
+            status_code=303,
+        )
+    
     perfume = (
         database_orm.obtener_perfume_por_id(perfume_id)
     )
@@ -573,6 +627,12 @@ def mostrar_confirmacion_eliminacion(
     request: Request,
     perfume_id: int,
 ):
+    usuario_actual = requerir_usuario(request)
+    if usuario_actual is None:
+        return RedirectResponse(
+            url="/login",
+            status_code=303,
+        )
     perfume = (
         database_orm.obtener_perfume_por_id(perfume_id)
     )
@@ -592,7 +652,17 @@ def mostrar_confirmacion_eliminacion(
     )
 
 @app.post("/eliminar/{perfume_id}")
-def procesar_eliminacion( perfume_id : int,):
+def procesar_eliminacion(
+    request: Request,
+    perfume_id: int,
+):
+    usuario_actual = requerir_usuario(request)
+    if usuario_actual is None:
+        return RedirectResponse(
+            url="/login",
+            status_code=303,
+        )
+    
     perfume = (
         database_orm.obtener_perfume_por_id(perfume_id)
     )
@@ -788,30 +858,30 @@ def mostrar_login(
 
 def iniciar_sesion(
     request: Request,
-    username: str = Form(...),
+    identificador: str = Form(...),
     password: str = Form(...),
 ):
-    username = (
-        username
+    identificador = (
+        identificador
         .strip()
         .lower()
     )
-    datos = {
-        "username": username,
-    }
+
+    datos = {"identificador": identificador}
 
     usuario = (
         database_orm
-        .obtener_usuario_por_username(username)
+        .obtener_usuario_por_identificador(identificador)
     )
 
     if (
-        usuario is None or not usuario.is_active
+        usuario is None
+        or not usuario.is_active
     ):
         return renderizar_login(
             request,
             error=(
-                "El nombre de usuario "
+                "El usuario, correo electrónico "
                 "o la contraseña son incorrectos."
             ),
             datos=datos,
@@ -819,17 +889,14 @@ def iniciar_sesion(
         )
 
     password_correcta = (
-        verificar_password(
-            password,
-            usuario.password_hash,
-        )
+        verificar_password(password, usuario.password_hash)
     )
 
     if not password_correcta:
         return renderizar_login(
             request,
-            error=(
-                "Eñ nombre de usuario "
+            error = (
+                "El usuario, correo electrónico "
                 "o la contraseña son incorrectos."
             ),
             datos=datos,
@@ -838,14 +905,12 @@ def iniciar_sesion(
 
     request.session.clear()
 
-    request.session[
-        "user_id"
-    ] = usuario.id
-
+    request.session["user_id"] = usuario.id
     return RedirectResponse(
         url="/login",
         status_code=303,
     )
+
 
 @app.post(
     "/logout",
