@@ -18,13 +18,18 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Sesiones web mediante cookies firmadas y configuracion segura por entorno.
 - Configuración local persistente de las variables de sesión mediante `.env` y plantilla `.env.example`.
 - Protección de las operaciones de alta, edición y eliminación de perfumes para requerir una sesión autenticada.
+- Modelo rom "collection" para representar las colecciones pertenecientes a usuarios.
+- Relacion de propiedad entre usuarios y colecciones mediante "owner_id"
+- Relacion entre perfumes y colecciones mediante "collection_id"
+- Creación automática de una colección principal al registrar un nuevo usuario
+- MIgracion de Alembic para incorporar colecciones y asociar los perfumes históricos a una colección valida
 
 ### Cambiado
 
 - La validación de contraseñas del registro fue centralizada en "security.py"
 - El registro de usuarios ahora enlaza directamente con el inicio de sesión.
 - El inicio de sesión ahora permite autenticarse tanto con nombre de usuario como con correo electrónico.
-
+- Los nuevos perfumes pasan a asociarse automáticamente a la colección principal del usuario autenticado
 
 ### En desarrollo
 

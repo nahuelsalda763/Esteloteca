@@ -2,7 +2,7 @@ from sqlalchemy import (create_engine, or_, select,)
 from sqlalchemy.orm import Session
 
 from config import DATABASE_URL
-from models import Perfume, User
+from models import Collection, Perfume, User
 
 
 
@@ -10,7 +10,16 @@ engine = create_engine(
     DATABASE_URL,
 )
 
-
+def obtener_coleccion_principal_por_usuario(user_id: int):
+    sentencia = (
+        select(Collection)
+        .where(Collection.owner_id == user_id)
+        .order_by(Collection.id)
+        .limit(1)
+    )
+    with Session(engine) as session:
+        return session.scalar(sentencia)
+    
     
 def obtener_perfumes():
     sentencia = (
@@ -63,6 +72,7 @@ def agregar_perfume (
         tamano_ml: int,
         fragrantica_url: str | None,
         imagen: str | None,
+        collection_id: int,
 ):
     nuevo_perfume = Perfume(
         marca = marca,
@@ -71,6 +81,7 @@ def agregar_perfume (
         tamano_ml = tamano_ml,
         fragrantica_url = fragrantica_url,
         imagen = imagen,
+        collection_id = collection_id,
     )
 
     with Session(engine) as session:
@@ -173,8 +184,19 @@ def agregar_usuario(
 
     with Session(engine) as session:
         session.add(usuario)
+        session.flush()
+
+        coleccion = Collection(
+            owner_id=usuario.id,
+            name="Mi colección",
+            description=None,
+            is_public=False,
+        )
+
+        session.add(coleccion)
         session.commit()
         session.refresh(usuario)
 
         return usuario
+
 

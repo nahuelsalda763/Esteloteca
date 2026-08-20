@@ -431,6 +431,19 @@ def agregar_perfume(
             status_code=303,
         )
 
+    coleccion = (
+        database_orm
+        .obtener_coleccion_principal_por_usuario(usuario_actual.id)
+    )
+    if coleccion is None:
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "El usuario autenticado "
+                "no tiene una colección."
+            )
+        )
+
     enlace_normalizado = normalizar_url(
         fragrantica_url
     )
@@ -446,6 +459,7 @@ def agregar_perfume(
         tamano_ml=tamano_ml,
         fragrantica_url=enlace_normalizado,
         imagen=nombre_imagen,
+        collection_id=coleccion.id,
     )
 
     return RedirectResponse(
