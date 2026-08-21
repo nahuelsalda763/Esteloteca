@@ -40,6 +40,33 @@ def obtener_perfume_por_id(perfume_id: int,):
         perfume = session.scalar(sentencia)
         return perfume
 
+def usuario_es_propietario_del_perfume(perfume_id: int, user_id:int) -> bool:
+    sentencia = (
+        select(Perfume.id)
+        .join(
+            Collection,
+            Perfume.collection_id == Collection.id,
+        )
+        .where(
+            Perfume.id == perfume_id,
+            Collection.owner_id == user_id,
+        )
+    )
+    with Session(engine) as session:
+        return session.scalar(sentencia) is not None
+
+def obtener_ids_perfumes_por_usuario(user_id: int) -> set[int]:
+    sentencia = (
+        select(Perfume.id)
+        .join(
+            Collection,
+            Perfume.collection_id == Collection.id,
+        )
+        .where(Collection.owner_id == user_id)
+    )
+    with Session(engine) as session:
+        return set(session.scalars(sentencia).all())
+
 def buscar_perfumes(termino: str,):
     termino = termino.strip()
 
@@ -98,10 +125,23 @@ def actualizar_perfume(
         tamano_ml: int,
         fragrantica_url: str | None,
         imagen: str | None,
+        user_id: int,
 ) -> bool:
 
+    sentencia = (
+        select(Perfume)
+        .join(
+            Collection,
+            Perfume.collection_id == Collection.id,
+        )
+        .where(
+            Perfume.id == perfume_id,
+            Collection.owner_id == user_id,
+        )
+    )
+
     with Session(engine) as session:
-        perfume = session.get (Perfume, perfume_id)
+        perfume = session.scalar(sentencia)
 
         if perfume is None:
             return False
@@ -114,21 +154,31 @@ def actualizar_perfume(
         perfume.imagen = imagen
 
         session.commit()
-
         return True
 
 def eliminar_perfume(
         perfume_id: int,
+        user_id: int,
 ) -> bool:
-    with Session(engine) as session:
-        perfume = session.get(
-            Perfume,
-            perfume_id,
+    sentencia = (
+        select(Perfume)
+        .join(
+            Collection,
+            Perfume.collection_id == Collection.id,
         )
+        .where(
+            Perfume.id == perfume_id,
+            Collection.owner_id == user_id,
+        )
+    )
+
+    with Session(engine) as session:
+        perfume = session.scalar(sentencia)
+
         if perfume is None:
             return False
 
-        session.delete( perfume )
+        session.delete(perfume)
         session.commit()
 
         return True

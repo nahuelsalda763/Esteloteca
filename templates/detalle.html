@@ -47,7 +47,12 @@
                     </div>
                 </d1>
                 <div class="acciones-detalle">
+                    
+                    {% if puede_modificar %}
+                    
                     <a class="boton boton-editar" href="/editar/{{ perfume.id }}">Editar perfume</a>
+
+                    {% endif %}
 
                     {% set url_fragrantica = perfume.fragrantica_url | default('',true) | trim %}
 
@@ -55,7 +60,12 @@
                         <a class="boton" href="{{ url_fragrantica }}" target="_blank" rel="noopener noreferrer">Ver en Fragrantica</a>
                     {% endif %}
 
-                    <a  class="boton boton-eliminar" href="/eliminar/{{ perfume.id }}">Eliminar perfume</a>
+                    {% if puede_modificar %}
+                    
+                    <a class="boton boton-eliminar" href="/eliminar/{{ perfume.id }}">Eliminar perfume</a>
+
+                    {% endif %}
+
                 </div>
             </div>
         </article>

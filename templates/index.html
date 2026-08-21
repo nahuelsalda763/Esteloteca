@@ -150,7 +150,14 @@
                             <div class="acciones-tarjeta">
 
                                 <a class="boton boton-detalle" href="/perfume/{{ perfume.id }}">Ver detalle</a>
+
+                                {% if perfume.id in perfumes_propios_ids %}
+
                                 <a class="boton boton-editar" href="/editar/{{ perfume.id }}">Editar</a>
+
+                                {% endif %}
+
+
                                 {% set url_fragrantica =
                                     perfume.fragrantica_url
                                     | default('', true)
@@ -173,13 +180,11 @@
 
                                 {% endif %}
 
+                                {% if perfume.id in perfumes_propios_ids %}
 
-                                <a
-                                    class="boton boton-eliminar"
-                                    href="/eliminar/{{ perfume.id }}"
-                                >
-                                    Eliminar
-                                </a>
+                                <a class="boton boton-eliminar" href="/eliminar/{{ perfume.id }}">Eliminar</a>
+                                {% endif %}
+
 
                             </div>
 
