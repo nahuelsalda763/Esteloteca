@@ -23,6 +23,8 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Relacion entre perfumes y colecciones mediante "collection_id"
 - Creación automática de una colección principal al registrar un nuevo usuario
 - MIgracion de Alembic para incorporar colecciones y asociar los perfumes históricos a una colección valida
+- Autorizacion por propiedad para impedir que un usuario edite o elimine perfumes pertenecientes a colecciones de otro user.
+- Respuesta HTTP 403 para intentos de edicion o eliminacion no autorizados
 
 ### Cambiado
 
@@ -30,6 +32,8 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - El registro de usuarios ahora enlaza directamente con el inicio de sesión.
 - El inicio de sesión ahora permite autenticarse tanto con nombre de usuario como con correo electrónico.
 - Los nuevos perfumes pasan a asociarse automáticamente a la colección principal del usuario autenticado
+- Las operaciones ORM de actualización y eliminación de perfumes verifican también el propietario autenticado-
+- Las acciones editar y eliminar se muestran en el listado y en el detalle solo cuando el perfume pertenece al usuario autentificado.
 
 ### En desarrollo
 
