@@ -381,7 +381,7 @@ def mostrar_coleccion(
     usuario_actual = obtener_usuario_actual(request)
     perfumes_propios_ids: set[int] = set()
 
-    if usuario_actual is None:
+    if usuario_actual is not None:
         perfumes_propios_ids = (
             database_orm
             .obtener_ids_perfumes_por_usuario(usuario_actual.id)
@@ -396,21 +396,6 @@ def mostrar_coleccion(
 
     else:
         perfumes = todos_los_perfumes
-
-    print(
-        "INDEX - usuario_actual:",
-        usuario_actual
-    )
-
-    print(
-        "INDEX - user_id:",
-        usuario_actual.id if usuario_actual else None
-    )
-
-    print(
-        "INDEX - perfumes_propios_ids:",
-        perfumes_propios_ids
-    )
 
     return templates.TemplateResponse(
         request = request,
