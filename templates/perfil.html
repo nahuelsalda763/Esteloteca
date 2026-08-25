@@ -1,0 +1,77 @@
+{% extends  "base.html" %}
+
+{% block title %}
+    {{ usuario.username }} | Esteloteca
+{% endblock %}
+
+{% block content %}
+
+<header class="encabezado">
+    <div class ="contenedor encabezado-contenido">
+        <div>
+            <h1>Esteloteca</h1>
+            <p>Perfil de usuario</p>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor">
+    <section class="perfil-contenedor">
+        <div class="perfil-cabecera">
+            <div>
+                <p class="perfil-etiqueta">Usuario</p>
+                <h2>@{{ usuario.username }}</h2>
+                <p class="perfil-meta">
+                    Miembro desde
+                    {{ usuario.created_at.strftime("%d/%m/%Y") }}
+                </p>
+            </div>
+        </div>
+
+        {% if es_perfil_propio %}
+            <dl class="perfil-datos">
+                <div>
+                    <dt>Correo electrónico</dt>
+                    <dd>{{ usuario.email }}</dd>
+                </div>
+
+                <div>
+                    <dt>Colección principal</dt>
+                    <dd>
+                        {% if coleccion %}
+                            {{ coleccion.name }}
+
+                        {% else %}
+                            No disponible
+
+                        {% endif %}
+                    </dd>
+                </div>
+                
+                <div>
+                    <dt>Perfumes Registrados</dt>
+                    <dd>{{ cantidad_perfumes }} </dd>
+                </div>
+            </dl>
+
+            <div class="perfil-acciones">
+                <a class="boton boton-secundario" href="/">Ir a mi colección</a>
+                
+                <form method="post" action="/logout">
+                    <button type="submit" class="boton">Cerrar sesión</button>
+                </form>
+            </div>
+
+            {% else %}
+                <p class="perfil-publico">
+                    Este es el perfil público de
+                    <strong>@{{ usuario.username }}</strong>.
+                </p>
+
+            {% endif %}
+
+    </section>
+</main>
+
+
+{% endblock %}

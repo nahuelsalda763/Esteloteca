@@ -971,6 +971,75 @@ def iniciar_sesion(
         status_code=303,
     )
 
+@app.get(
+        "/perfil",
+        response_class = HTMLResponse,
+)
+
+def mostrar_mi_perfil(request:Request):
+    usuario_actual = requerir_usuario(request)
+
+    if usuario_actual is None:
+        return RedirectResponse(
+            url="/login",
+            status_code=303,
+        )
+
+    return RedirectResponse(
+        url=f"/usuarios/{usuario_actual.username}",
+        status_code=303,
+    )
+
+@app.get(
+        "/usuarios/{username}",
+        response_class=HTMLResponse,
+)
+
+def mostrar_perfil_usuario(request: Request, username: str):
+    username_normalizado = (
+        username
+        .strip()
+        .lower()
+    )
+
+    usuario = (
+        database_orm
+        .obtener_usuario_por_username(username_normalizado)
+    )
+
+    if usuario is None or not usuario.is_active:
+        raise HTTPException(
+            status_code=404,
+            detail="Perfil no encontrado.",
+        )
+
+    usuario_actual = obtener_usuario_actual(request)
+
+    es_perfil_propio = (usuario_actual is not None and usuario_actual.id == usuario.id)
+
+    coleccion = None
+    cantidad_perfumes = None
+
+    if es_perfil_propio:
+        coleccion = (
+            database_orm
+            .obtener_coleccion_principal_por_usuario(usuario.id)
+        )
+        cantidad_perfumes = len(
+            database_orm
+            .obtener_ids_perfumes_por_usuario(usuario.id)
+        )
+
+    return templates.TemplateResponse(
+            request = request,
+            name = "perfil.html",
+            context = {
+                "usuario": usuario,
+                "es_perfil_propio": es_perfil_propio,
+                "coleccion": coleccion,
+                "cantidad_perfumes": cantidad_perfumes
+            },
+        )
 
 @app.post(
     "/logout",

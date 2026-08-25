@@ -147,6 +147,17 @@ body {
     white-space: nowrap;
 }
 
+.acciones-encabezado {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.acciones-encabezado .boton {
+    width: auto;
+    margin-top: 0;
+}
+
 .boton-secundario {
     background-color: #e8e3de;
     color: #332d29;
@@ -219,6 +230,68 @@ body {
     margin-top: 0;
 }
 
+.perfil-contenedor{
+    max-width: 700px;
+    margin: 32px auto;
+    padding: 24px;
+    background-color: #ffffff;
+    border: 1px solid #ded9d4;
+    border-radius: 12px;
+}
+
+.perfil-cabecera h2{
+    margin: 4px 0 8px;
+    font-size: 1.8rem;
+}
+
+.perfil-etiqueta{
+    margin: 0;
+    color: #625b56;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.perfil-meta,
+.perfil-publico {
+    color: #625b56;
+}
+
+.perfil-datos{
+    margin: 24px 0 0;
+}
+
+.perfil-datos div{
+    padding: 14px 0;
+    border-bottom: 1px solid #ded9d4;
+}
+
+.perfil-datos dt{
+    margin-bottom: 5px;
+    color: #625b56;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.perfil-datos dd{
+    margin: 0;
+}
+
+.perfil-acciones {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.perfil-acciones .boton{
+    width: auto;
+    margin-top: 0;
+}
+
+.perfil-acciones form{
+    margin: 0;
+}
+
 
 /* =========================
    TABLETS Y COMPUTADORAS
@@ -245,6 +318,16 @@ body {
     .encabezado-contenido {
         align-items: stretch;
         flex-direction: column;
+    }
+
+    .acciones-encabezado,
+    .perfil-acciones{
+        flex-direction: column;
+    }
+    .acciones-encabezado .boton,
+    .perfil-acciones .boton,
+    .perfil-acciones form {
+        width: 100%;
     }
 
     .boton-agregar {

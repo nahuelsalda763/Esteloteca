@@ -11,22 +11,24 @@
     <header class="encabezado">
         <div class="contenedor encabezado-contenido">
 
-            <div>
-                <h1>Esteloteca </h1>
 
-                <p>
-                    Perfumes registrados: {{ total_perfumes }}
-                </p>
+            <div>
+                <h1>Esteloteca</h1>
+                <p>Perfumes registrados: {{ total_perfumes }}</p>
             </div>
 
-            <a
-                class="boton boton-agregar"
-                href="/agregar"
-            >
-                Agregar perfume
-            </a>
+            <div class="acciones-encabezado">
+                {% if request.session.get("user_id") %}
+                    
+                    <a class="boton boton-secundario" href="/perfil">Mi perfil</a>
 
+                {% endif %}
+
+                <a class="boton boton-agregar" href="/agregar">Agregar perfume</a>
+
+            </div>
         </div>
+            
     </header>
 
 
