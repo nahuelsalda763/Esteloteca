@@ -44,6 +44,7 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 ### Corregido
 
 - Collection.created_at deja de actualizarse al modificar la colección. Los cambios continuúan registrándose por update_at.
+- Corrección del cacheo de css y js de la PWA para que los cambios de la interfaz se actualicen sin requerir recargas forzadas. 
 
 ### En desarrollo
 

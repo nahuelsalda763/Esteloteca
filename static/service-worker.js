@@ -1,4 +1,4 @@
-const CACHE_NAME = "esteloteca-static-v2";
+const CACHE_NAME = "esteloteca-static-v3";
 
 const STATIC_ASSETS = [
     "/static/css/styles.css",
@@ -75,20 +75,56 @@ self.addEventListener("fetch", (event) => {
         Si FastAPI no responde, mostramos
         nuestra página offline.
     */
-    if (event.request.mode === "navigate") {
+
+    if (event.request.mode == "navigate") {
 
         event.respondWith(
             fetch(event.request)
-                .catch(() => {
-                    return caches.match(
-                        "/static/offline.html"
-                    );
-                })
+            .catch(() => {
+                return caches.match("/static/offline.html");
+            })
         );
-
         return;
     }
 
+    /*
+        CSS Y JS
+        Priorizamos la red para recibir la version actual cuando haya conexión.
+        Si la red falla, usamos la copia almacenada en cache.
+
+    */
+
+    if (
+        requestUrl.pathname.endsWith(".css")
+        || requestUrl.pathname.endsWith(".js")
+    ) {
+        event.respondWith(
+            fetch(
+                event.request,
+                { cache: "no-cache" }
+            )
+                .then((respuestaRed) => {
+                    if (respuestaRed.ok){
+                        const copiaRespuesta =
+                            respuestaRed.clone();
+
+                        caches
+                            .open(CACHE_NAME)
+                            .then((cache) => {
+                                cache.put(
+                                    event.request,
+                                    copiaRepuesta
+                                );
+                            });
+                    }
+                    return respuestaRed;
+                })
+                .catch(() => {
+                    return caches.match(event.request);
+                })
+        );
+        return;
+    }
 
     /*
         Recursos de /static/.
