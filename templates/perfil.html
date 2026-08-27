@@ -47,6 +47,19 @@
                         {% endif %}
                     </dd>
                 </div>
+
+                <div>
+                    <dt>Visibilidad de la colección</dt>
+                    <dd>
+                        {% if coleccion and coleccion.is_public %}
+                            Pública
+
+                        {% else %}
+                            Privada
+
+                        {% endif %}
+                    </dd>
+                </div>
                 
                 <div>
                     <dt>Perfumes Registrados</dt>
@@ -57,6 +70,37 @@
             <div class="perfil-acciones">
                 <a class="boton boton-secundario" href="/">Ir a mi colección</a>
                 
+                {% if coleccion %}
+                
+                    <form
+                        method="post"
+                        action="/colecciones/{{ coleccion.id }}/visibilidad"
+                    >
+                    
+                    {% if coleccion.is_public %}
+                        <input 
+                            type="hidden"
+                            name="is_public"
+                            value="false"
+                        >
+                        
+                        <button type="submit" class="boton boton-secundario">Hacer privada</button>
+
+                    {% else %}
+                        <input
+                            type="hidden"
+                            name="is_public"
+                            value="true"
+                        >
+                        
+                        <button type="submit" class="boton boton-secundario">Hacer Pública</button>
+
+                    {% endif %}
+
+                    </form>
+
+                {% endif %}
+
                 <form method="post" action="/logout">
                     <button type="submit" class="boton">Cerrar sesión</button>
                 </form>

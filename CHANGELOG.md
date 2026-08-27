@@ -27,6 +27,8 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Respuesta HTTP 403 para intentos de edicion o eliminacion no autorizados
 - Perfil de de usaurio con ruta pública por user y vista privada para el propietario autenticado.
 - Acceso a "mi perfil" para usuarios con sesión inciciada.
+- Control de visibilidad pública o privada para la colección principal del usuario.
+- Ruta protegida para cambiar la visibilidad de una coleccion verificando autenticación y propiedad.
 
 ### Cambiado
 
@@ -37,6 +39,11 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Las operaciones ORM de actualización y eliminación de perfumes verifican también el propietario autenticado-
 - Las acciones editar y eliminar se muestran en el listado y en el detalle solo cuando el perfume pertenece al usuario autentificado.
 - Los perfiles públicos no exponen correos ni datos privados de la colección
+- El perfil propio muestra el estado de visibilidad de la colección y permite cambiar entre público y privado.
+
+### Corregido
+
+- Collection.created_at deja de actualizarse al modificar la colección. Los cambios continuúan registrándose por update_at.
 
 ### En desarrollo
 

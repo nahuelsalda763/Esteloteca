@@ -19,7 +19,32 @@ def obtener_coleccion_principal_por_usuario(user_id: int):
     )
     with Session(engine) as session:
         return session.scalar(sentencia)
-    
+
+def obtener_coleccion_por_id(collection_id: int):
+    with Session(engine) as session:
+        return session.get(Collection, collection_id)
+
+def actualizar_visibilidad_coleccion(
+        collection_id: int,
+        user_id: int,
+        is_public: bool,
+) -> bool:
+    sentencia = (
+        select(Collection)
+        .where(
+            Collection.id == collection_id,
+            Collection.owner_id == user_id,
+        )
+    )
+    with Session(engine) as session:
+        coleccion = session.scalar(sentencia)
+
+        if coleccion is None:
+            return False
+
+        coleccion.is_public = is_public
+        session.commit()
+        return True
     
 def obtener_perfumes():
     sentencia = (

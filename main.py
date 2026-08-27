@@ -261,6 +261,29 @@ def requerir_propiedad_perfume(
 
     return perfume
 
+def requerir_propiedad_coleccion(collection_id: int, usuario_actual):
+    coleccion = (
+        database_orm
+        .obtener_coleccion_por_id(collection_id)
+    )
+
+    if coleccion is None:
+        raise HTTPException(
+            status_code= 404,
+            detail= "Colección no encontrada.",
+        )
+
+    if coleccion.owner_id != usuario_actual.id:
+        raise HTTPException(
+            status_code=403,
+            detail = (
+                "No tenés permiso para modificar "
+                "esta colección."
+            )
+        )
+
+    return coleccion
+
 
 # Tipos de imágenes permitidos.
 TIPOS_IMAGEN_PERMITIDOS = {
@@ -1040,6 +1063,50 @@ def mostrar_perfil_usuario(request: Request, username: str):
                 "cantidad_perfumes": cantidad_perfumes
             },
         )
+
+@app.post(
+        "/colecciones/{collection_id}/visibilidad",
+)
+
+def cambiar_visibilidad_coleccion(
+    request: Request,
+    collection_id: int,
+    is_public: bool = Form(...),
+):
+    usuario_actual = requerir_usuario(request)
+
+    if usuario_actual is None:
+        return RedirectResponse(
+            url="/login",
+            status_code= 303,
+        )
+
+    requerir_propiedad_coleccion(
+        collection_id = collection_id,
+        usuario_actual = usuario_actual,
+    )
+
+    actualizada = (
+        database_orm
+        .actualizar_visibilidad_coleccion(
+            collection_id = collection_id,
+            user_id = usuario_actual.id,
+            is_public = is_public,
+        )
+    )
+
+    if not actualizada:
+        raise HTTPException(
+            status_code= 404,
+            detail = "No se pudo actualizar la colección",
+        )
+
+    return RedirectResponse(
+        url = f"/usuarios/{usuario_actual.username}",
+        status_code = 303,
+    )
+
+
 
 @app.post(
     "/logout",
