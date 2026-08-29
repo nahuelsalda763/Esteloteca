@@ -29,6 +29,11 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Acceso a "mi perfil" para usuarios con sesión inciciada.
 - Control de visibilidad pública o privada para la colección principal del usuario.
 - Ruta protegida para cambiar la visibilidad de una coleccion verificando autenticación y propiedad.
+- Control de visibilidad pública o privada para la colección principal del usuario.
+- Ruta protegida para cambiar la visibilidad de una colección verificando autenticación y propiedad.
+- Vista pública en modo solo lectura para colecciones marcadas como públicas.
+- Página de bienvenida para visitantes sin sesion
+
 
 ### Cambiado
 
@@ -40,6 +45,9 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Las acciones editar y eliminar se muestran en el listado y en el detalle solo cuando el perfume pertenece al usuario autentificado.
 - Los perfiles públicos no exponen correos ni datos privados de la colección
 - El perfil propio muestra el estado de visibilidad de la colección y permite cambiar entre público y privado.
+- El inicio autenticado muestra únicamente los perfumes de la colección  del usuario y limita la búsqueda a esa colección.
+- Los perfiles públicos enlazan la colección únicamente cuando está marcada como pública.
+- El detalle de perfumes respeta la visibilidad de la colección: EL propietario puede verlo siempre y los terceros solo cuando es pública.
 
 ### Corregido
 

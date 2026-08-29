@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Esteloteca
+{% endblock %}
+
+{% block content %}
+<header class="encabezado">
+    <div class="contenedor encabezado-contenido">
+        <div>
+            <h1>Esteloteca</h1>
+            <p>Tu colección personal de perfumes</p>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor">
+    <section class="perfil-contenedor">
+        <p class="perfil-etiqueta">
+            Bienvenido a Esteloteca
+        </p>
+
+        <h2>
+            Organizá y disfrutá tu colección
+        </h2>
+
+        <p class="perfil-publico">
+            Esteloteca es un espacio para registrar,
+            organizar y consultar tu colección personal
+            de perfumes. Podés crear una cuenta para
+            administrar tus fragancias y decidir si tu
+            colección será pública o privada.
+        </p>
+
+        <p class="perfil-publico">
+            El proyecto seguirá creciendo con catálogo
+            compartido y recomendaciones personalizadas,
+            manteniendo tu colección como eje principal.
+        </p>
+
+        <div class="perfil-acciones">
+            <a class="boton" href="/login">
+                Iniciar sesión
+            </a>
+
+            <a
+                class="boton boton-secundario"
+                href="/registro"
+            >
+                Crear cuenta
+            </a>
+        </div>
+    </section>
+</main>
+{% endblock %}

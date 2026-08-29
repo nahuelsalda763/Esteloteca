@@ -394,43 +394,59 @@ def eliminar_imagen_local(nombre_imagen: str | None,):
         response_class = HTMLResponse,
 )
 
-def mostrar_coleccion(
-    request: Request,
-    buscar: str = "",
-):
-    termino_busqueda = buscar.strip()
-    todos_los_perfumes = (database_orm.obtener_perfumes())
-
+def mostrar_coleccion(request: Request, buscar: str = ""):
     usuario_actual = obtener_usuario_actual(request)
-    perfumes_propios_ids: set[int] = set()
 
-    if usuario_actual is not None:
-        perfumes_propios_ids = (
-            database_orm
-            .obtener_ids_perfumes_por_usuario(usuario_actual.id)
+    if usuario_actual is None:
+        return templates.TemplateResponse(
+            request = request,
+            name = "bienvenida.html",
+            context = {},
         )
+
+    coleccion = (
+        database_orm
+        .obtener_coleccion_principal_por_usuario(usuario_actual.id)
+    )
+    if coleccion is None:
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "El usuario autenticado no tiene "
+                "una colección principal."          
+            ),
+        )
+    termino_busqueda = buscar.strip()
+
+    todos_los_perfumes = (
+        database_orm
+        .obtener_perfumes_por_coleccion(coleccion.id)
+    )
 
     if termino_busqueda:
         perfumes = (
-            database_orm.buscar_perfumes(
-                termino_busqueda
-            )
+            database_orm
+            .buscar_perfumes_por_coleccion(coleccion.id, termino_busqueda)
         )
 
     else:
         perfumes = todos_los_perfumes
 
+    perfumes_propios_ids = {
+        perfume.id
+        for perfume in todos_los_perfumes
+    }
+
     return templates.TemplateResponse(
         request = request,
         name = "index.html",
-        context ={
+        context = {
             "perfumes": perfumes,
             "buscar": termino_busqueda,
             "total_perfumes": len(todos_los_perfumes),
-            "perfumes_propios_ids": perfumes_propios_ids,
+            "perfumes_propios_ids": (perfumes_propios_ids),
         },
     )
-
 
 
 @app.get(
@@ -446,6 +462,27 @@ def mostrar_detalle_perfume(request: Request, perfume_id: int,):
         )
 
     usuario_actual = obtener_usuario_actual(request)
+
+    user_id = (
+        usuario_actual.id
+        if usuario_actual is not None
+        else None
+    )
+
+    puede_ver = (
+        database_orm
+        .usuario_puede_ver_perfume(
+            perfume_id = perfume_id,
+            user_id = user_id,
+        )
+    )
+
+    if not puede_ver:
+        raise HTTPException(
+            status_code=404,
+            detail="Perfume no disponible.",
+        )
+
     puede_modificar = False
 
     if usuario_actual is not None:
@@ -460,8 +497,12 @@ def mostrar_detalle_perfume(request: Request, perfume_id: int,):
     return templates.TemplateResponse(
         request=request,
         name="detalle.html",
-        context={"perfume" : perfume, "puede_modificar": puede_modificar},
+        context={
+            "perfume": perfume,
+            "puede_modificar": puede_modificar,
+        },
     )
+
 
 
 @app.get(
@@ -1040,29 +1081,105 @@ def mostrar_perfil_usuario(request: Request, username: str):
 
     es_perfil_propio = (usuario_actual is not None and usuario_actual.id == usuario.id)
 
-    coleccion = None
+    coleccion = (
+        database_orm
+        .obtener_coleccion_principal_por_usuario(usuario.id)
+    )
+
     cantidad_perfumes = None
 
     if es_perfil_propio:
-        coleccion = (
-            database_orm
-            .obtener_coleccion_principal_por_usuario(usuario.id)
-        )
         cantidad_perfumes = len(
             database_orm
             .obtener_ids_perfumes_por_usuario(usuario.id)
         )
 
-    return templates.TemplateResponse(
-            request = request,
-            name = "perfil.html",
-            context = {
-                "usuario": usuario,
-                "es_perfil_propio": es_perfil_propio,
-                "coleccion": coleccion,
-                "cantidad_perfumes": cantidad_perfumes
-            },
+    puede_ver_coleccion = (
+        coleccion is not None
+        and (
+            es_perfil_propio or coleccion.is_public
         )
+    )
+
+    return templates.TemplateResponse(
+        request= request,
+        name= "perfil.html",
+        context = {
+            "usuario": usuario,
+            "es_perfil_propio": es_perfil_propio,
+            "coleccion": coleccion,
+            "cantidad_perfumes": cantidad_perfumes,
+            "puede_ver_coleccion": puede_ver_coleccion,
+        },
+    )
+
+@app.get(
+        "/usuarios/{username}/coleccion",
+        response_class=HTMLResponse,
+)
+
+def mostar_coleccion_usuario(request: Request, username: str):
+    username_normalizado = (
+        username
+        .strip()
+        .lower()
+    )
+
+    usuario = (
+        database_orm
+        .obtener_usuario_por_username(username_normalizado)
+    )
+
+    if usuario is None or not usuario.is_active:
+        raise HTTPException(
+            status_code= 404,
+            detail= "Perfil no encontrado.",
+        )
+
+    coleccion = (
+        database_orm
+        .obtener_coleccion_principal_por_usuario(usuario.id)
+    )
+
+    if coleccion is None:
+        raise HTTPException(
+            status_code= 404,
+            detail="Colección no encontrada.",
+        )
+
+    usuario_actual = obtener_usuario_actual(request)
+
+    es_propietario = (
+        usuario_actual is not None
+        and usuario_actual.id == usuario.id
+    )
+
+    if (
+        not es_propietario
+        and not coleccion.is_public
+    ):
+        raise HTTPException(
+            status_code=404,
+            detail="Colección no disponible.",
+        )
+
+    perfumes = (
+        database_orm
+        .obtener_perfumes_por_coleccion(coleccion.id)
+    )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="coleccion_publica.html",
+        context={
+            "usuario": usuario,
+            "coleccion": coleccion,
+            "perfumes": perfumes,
+            "es_propietario": es_propietario,
+        },
+    )
+
+
 
 @app.post(
         "/colecciones/{collection_id}/visibilidad",

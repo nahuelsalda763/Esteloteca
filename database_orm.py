@@ -45,7 +45,43 @@ def actualizar_visibilidad_coleccion(
         coleccion.is_public = is_public
         session.commit()
         return True
-    
+
+def obtener_perfumes_por_coleccion(collection_id: int):
+    sentencia = (
+        select(Perfume)
+        .where(Perfume.collection_id == collection_id)
+        .order_by(Perfume.id.desc())
+    )
+
+    with Session(engine) as session:
+        return session.scalars(sentencia).all()
+
+def buscar_perfumes_por_coleccion(collection_id: int, termino: str):
+    termino = termino.strip()
+
+    if not termino:
+        return obtener_perfumes_por_coleccion(collection_id)
+
+    patron = f"%{termino}%"
+    sentencia = (
+        select(Perfume)
+        .where(
+            Perfume.collection_id == collection_id,
+            or_(
+                Perfume.marca.ilike(patron),
+                Perfume.nombre.ilike(patron),
+            ),
+        )
+        .order_by(
+            Perfume.marca,
+            Perfume.nombre,
+        )
+    )
+
+    with Session(engine) as session:
+        return session.scalars(sentencia).all()
+
+
 def obtener_perfumes():
     sentencia = (
         select(Perfume)
@@ -79,6 +115,34 @@ def usuario_es_propietario_del_perfume(perfume_id: int, user_id:int) -> bool:
     )
     with Session(engine) as session:
         return session.scalar(sentencia) is not None
+
+
+def usuario_puede_ver_perfume(perfume_id: int, user_id: int | None) -> bool:
+    sentencia =(
+        select(Perfume.id)
+        .join(
+            Collection,
+            Perfume.collection_id == Collection.id,
+        )
+        .where(Perfume.id == perfume_id)
+    )
+
+    if user_id is None:
+        sentencia = sentencia.where(
+            Collection.is_public.is_(True)
+        )
+
+    else:
+        sentencia = sentencia.where(
+            or_(
+                Collection.is_public.is_(True),
+                Collection.owner_id == user_id,
+            )
+        )
+
+    with Session(engine) as session:
+        return session.scalar(sentencia) is not None
+    
 
 def obtener_ids_perfumes_por_usuario(user_id: int) -> set[int]:
     sentencia = (

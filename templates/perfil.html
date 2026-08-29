@@ -112,6 +112,21 @@
                     <strong>@{{ usuario.username }}</strong>.
                 </p>
 
+                {% if puede_ver_coleccion %}
+                    <div class="perfil-acciones">
+                        <a class="boton boton-secundario" href="/usuarios/{{ usuario.username }}/coleccion">Ver colección.</a>
+                    </div>
+                
+                {% else %}
+                    <p class="perfil-publico">La colección de este usuario es privada.</p>
+
+                    <div class="perfil-acciones">
+                        <a class="boton boton-secundario" href="/">
+                            Volver al inicio
+                        </a>
+                    </div>
+
+                {% endif %}
             {% endif %}
 
     </section>
