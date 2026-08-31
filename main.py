@@ -448,6 +448,38 @@ def mostrar_coleccion(request: Request, buscar: str = ""):
         },
     )
 
+@app.get(
+        "/catalogo",
+        response_class=HTMLResponse,
+)
+
+def mostrar_catalogo(request: Request, buscar: str = ""):
+    termino_busqueda = buscar.strip()
+
+    if termino_busqueda:
+        perfumes_catalogo = (
+            database_orm
+            .buscar_catalogo_perfumes(termino_busqueda)
+        )
+
+    else:
+        perfumes_catalogo = (
+            database_orm
+            .obtener_catalogo_perfumes()
+        )
+
+    usuario_actual = obtener_usuario_actual(request)
+
+    return templates.TemplateResponse(
+        request = request,
+        name = "catalogo.html",
+        context = {
+            "perfumes": perfumes_catalogo,
+            "buscar": termino_busqueda,
+            "total_perfumes": len(perfumes_catalogo),
+            "usuario_actual": usuario_actual,
+        },
+    )
 
 @app.get(
         "/perfume/{perfume_id}",

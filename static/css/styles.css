@@ -577,6 +577,39 @@ body {
     width: auto;
 }
 
+/* Catálogo global */
+
+.catalogo-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(220px, 1fr)
+    );
+    gap: 16px;
+    padding: 24px 0;
+}
+
+.tarjeta-catalogo {
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ded9d4;
+    border-radius: 12px;
+}
+
+.tarjeta-catalogo h2 {
+    margin: 6px 0 10px;
+    font-size: 1.2rem;
+}
+
+.tarjeta-catalogo p {
+    margin: 6px 0;
+}
+
+.tarjeta-catalogo .boton{
+    width: auto;
+    margin-top: 18px;
+}
+
 .detalle-perfume{
     display:grid;
     grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);

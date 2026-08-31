@@ -1,14 +1,75 @@
-from sqlalchemy import (create_engine, or_, select,)
+import unicodedata
+
+from sqlalchemy import (create_engine, or_, select)
 from sqlalchemy.orm import Session
 
 from config import DATABASE_URL
-from models import Collection, Perfume, User
-
+from models import CatalogPerfume, Collection, Perfume, User
 
 
 engine = create_engine(
     DATABASE_URL,
 )
+
+def normalizar_valor_catalogo(valor:str) -> str:
+    texto = unicodedata.normalize("NFKC", valor)
+    texto = " ".join(texto.strip().split())
+    return texto.casefold()
+
+def crear_clave_catalogo(
+        marca: str,
+        nombre: str,
+        concentracion: str,
+) -> str:
+    return "|".join(
+        (
+            normalizar_valor_catalogo(marca),
+            normalizar_valor_catalogo(nombre),
+            normalizar_valor_catalogo(concentracion),
+        )
+    )
+
+def obtener_catalogo_perfumes():
+    sentencia = (
+        select(CatalogPerfume)
+        .order_by(
+            CatalogPerfume.marca,
+            CatalogPerfume.nombre,
+            CatalogPerfume.concentracion,
+        )
+    )
+
+    with Session(engine) as session:
+        return session.scalars(sentencia).all()
+
+
+def buscar_catalogo_perfumes(termino: str):
+    termino = termino.strip()
+
+    if not termino:
+        return obtener_catalogo_perfumes()
+
+    patron = f"%{termino}%"
+
+    sentencia = (
+        select(CatalogPerfume)
+        .where(
+            or_(
+                CatalogPerfume.marca.ilike(patron),
+                CatalogPerfume.nombre.ilike(patron),
+                CatalogPerfume.concentracion.ilike(patron),
+            )
+        )
+        .order_by(
+            CatalogPerfume.marca,
+            CatalogPerfume.nombre,
+            CatalogPerfume.concentracion,
+        )
+    )
+
+    with Session(engine) as session:
+        return session.scalars(sentencia).all()
+
 
 def obtener_coleccion_principal_por_usuario(user_id: int):
     sentencia = (
@@ -181,7 +242,7 @@ def buscar_perfumes(termino: str,):
         perfumes = session.scalars(sentencia).all()
         return perfumes
 
-def agregar_perfume (
+def agregar_perfume(
         marca: str,
         nombre: str,
         concentracion: str,
@@ -190,21 +251,46 @@ def agregar_perfume (
         imagen: str | None,
         collection_id: int,
 ):
-    nuevo_perfume = Perfume(
-        marca = marca,
-        nombre = nombre,
-        concentracion = concentracion,
-        tamano_ml = tamano_ml,
-        fragrantica_url = fragrantica_url,
-        imagen = imagen,
-        collection_id = collection_id,
+    catalog_key = crear_clave_catalogo(
+        marca,
+        nombre,
+        concentracion,
     )
 
     with Session(engine) as session:
-        session.add( nuevo_perfume )
+        perfume_catalogo = session.scalar(
+            select(CatalogPerfume)
+            .where(CatalogPerfume.catalog_key == catalog_key)
+        )
 
+        if perfume_catalogo is None:
+            perfume_catalogo = CatalogPerfume(
+                marca=marca.strip(),
+                nombre=nombre.strip(),
+                concentracion=concentracion.strip(),
+                catalog_key=catalog_key,
+                fragrantica_url=fragrantica_url,
+            )
+            session.add(perfume_catalogo)
+
+        elif (
+            not perfume_catalogo.fragrantica_url
+            and fragrantica_url
+        ):
+            perfume_catalogo.fragrantica_url = (fragrantica_url)
+
+        nuevo_perfume = Perfume(
+            marca = marca,
+            nombre = nombre,
+            concentracion = concentracion,
+            tamano_ml = tamano_ml,
+            fragrantica_url = fragrantica_url,
+            imagen = imagen,
+            collecion_id = collection_id,
+        )
+
+        session.add(nuevo_perfume)
         session.commit()
-
 
 def actualizar_perfume(
         perfume_id: int,

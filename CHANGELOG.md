@@ -33,6 +33,11 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Ruta protegida para cambiar la visibilidad de una colección verificando autenticación y propiedad.
 - Vista pública en modo solo lectura para colecciones marcadas como públicas.
 - Página de bienvenida para visitantes sin sesion
+- Catálgo global inicila de perfumes con una identidad única por marca, nombre y concentración.
+- Modelo "CatalogPerfume" y tabla "catalog_perfumes".
+- Migración de Alembic que crea el catálogo y migra los perfumes existentes.
+- VIsta pública "/catalogo" con búsqueda por marca, nombre o concentracion.
+
 
 
 ### Cambiado
@@ -48,7 +53,7 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - El inicio autenticado muestra únicamente los perfumes de la colección  del usuario y limita la búsqueda a esa colección.
 - Los perfiles públicos enlazan la colección únicamente cuando está marcada como pública.
 - El detalle de perfumes respeta la visibilidad de la colección: EL propietario puede verlo siempre y los terceros solo cuando es pública.
-
+- El alta de un perfume mantiene sincronizada su identidad dentro del catálogo global sin duplicar entradas equivalentes.
 ### Corregido
 
 - Collection.created_at deja de actualizarse al modificar la colección. Los cambios continuúan registrándose por update_at.

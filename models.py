@@ -5,6 +5,7 @@ from sqlalchemy import(
     DateTime,
     ForeignKey,
     String,
+    UniqueConstraint,
     Text,
     false,
     func,
@@ -95,6 +96,33 @@ class Collection(Base):
 
     perfumes: Mapped[list["Perfume"]] = relationship(back_populates="collection")
     
+
+class CatalogPerfume(Base):
+    __tablename__ = "catalog_perfumes"
+    __table_args__ = (
+        UniqueConstraint(
+            "catalog_key",
+            name="uq_catalog_perfumes_catalog_key",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    marca: Mapped[str] = mapped_column(String(100), nullable=False)
+
+    nombre: Mapped[str] = mapped_column(String(150), nullable=False)
+
+    concentracion: Mapped[str] = mapped_column(String(80), nullable=False)
+
+    catalog_key: Mapped[str] = mapped_column(String(400), nullable=False)
+
+    fragrantica_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone = True),
+        server_default=func.now(),
+        nullable=False,
+    )
 
 
 

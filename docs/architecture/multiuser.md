@@ -359,9 +359,13 @@ Etapa 07 — Propiedad de colecciones
 Etapa 08 — Autorización
 Etapa 09 — Perfil de usuario
 Etapa 10 — Colecciones públicas y privadas
+Etapa 11 - Vista pública de colección y bienvenida
+Etapa 12 - Catálogo global de perfumes
+Etapa 13 - Separación definitiva entre Perfume y CollectionItem
 ```
 
-La separación definitiva entre catálogo global y elementos pertenecientes a las colecciones se realizará posteriormente, una vez estabilizado el sistema multiusuario.
+Durante la Etapa 12, CatalogPerfume representa temporalmente la identidad global compartida mientras Perfume continúa representando una entrada concreta dentro de una colección. La etapa 13 realizara la separación definitiva hacia CollectionItem + Perfume global, una vez validado el catalogo y perservados los datos existentes.
+
 
 ---
 
