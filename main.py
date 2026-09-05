@@ -227,39 +227,36 @@ def obtener_usuario_actual(request: Request,):
 def requerir_usuario(request: Request):
     return obtener_usuario_actual(request)
 
-def requerir_propiedad_perfume(
-        perfume_id: int,
-        usuario_actual,
-):
-    perfume = (
+def requerir_propiedad_item(item_id: int, usuario_actual):
+    item = (
         database_orm
-        .obtener_perfume_por_id(perfume_id)
+        .obtener_item_coleccion_por_id(item_id)
     )
 
-    if perfume is None:
+    if item is None:
         raise HTTPException(
-            status_code = 404,
-            detail = "Perfume no encontrado.",
+            status_code=404,
+            detail="Elemento de colección no encontrado. ",
         )
 
     es_propietario = (
         database_orm
-        .usuario_es_propietario_del_perfume(
-            perfume_id=perfume_id,
+        .usuario_es_propietario_del_item(
+            item_id=item_id,
             user_id=usuario_actual.id,
         )
     )
 
     if not es_propietario:
         raise HTTPException(
-            status_code= 403,
-            detail = (
+            status_code=403,
+            detail=(
                 "No tenés permiso para modificar "
-                "este perfume."
+                "este elemento de la colección."
             ),
         )
 
-    return perfume
+    return item
 
 def requerir_propiedad_coleccion(collection_id: int, usuario_actual):
     coleccion = (
@@ -416,35 +413,33 @@ def mostrar_coleccion(request: Request, buscar: str = ""):
                 "una colección principal."          
             ),
         )
+
     termino_busqueda = buscar.strip()
 
-    todos_los_perfumes = (
+    todos_los_items = (
         database_orm
-        .obtener_perfumes_por_coleccion(coleccion.id)
+        .obtener_items_por_coleccion(coleccion.id)
     )
 
     if termino_busqueda:
-        perfumes = (
+        items = (
             database_orm
-            .buscar_perfumes_por_coleccion(coleccion.id, termino_busqueda)
+            .buscar_items_por_coleccion(
+                coleccion.id,
+                termino_busqueda,
+            )
         )
 
     else:
-        perfumes = todos_los_perfumes
-
-    perfumes_propios_ids = {
-        perfume.id
-        for perfume in todos_los_perfumes
-    }
+        items = todos_los_items
 
     return templates.TemplateResponse(
-        request = request,
-        name = "index.html",
-        context = {
-            "perfumes": perfumes,
+        request=request,
+        name="index.html",
+        context={
+            "items": items,
             "buscar": termino_busqueda,
-            "total_perfumes": len(todos_los_perfumes),
-            "perfumes_propios_ids": (perfumes_propios_ids),
+            "total_perfumes": len(todos_los_items),
         },
     )
 
@@ -482,19 +477,26 @@ def mostrar_catalogo(request: Request, buscar: str = ""):
     )
 
 @app.get(
-        "/perfume/{perfume_id}",
+        "/perfume/{item_id}",
         response_class=HTMLResponse,
 )
-def mostrar_detalle_perfume(request: Request, perfume_id: int,):
-    perfume = database_orm.obtener_perfume_por_id(perfume_id)
-    if perfume is None:
+
+def mostrar_detalle_perfume(
+    request:Request,
+    item_id: int,
+):
+    item =(
+        database_orm
+        .obtener_item_coleccion_por_id(item_id)
+    )
+
+    if item is None:
         raise HTTPException(
-            status_code = 404,
-            detail = "Perfume no encontrado",
+            status_code=404,
+            detail="Perfume no encontrado.",
         )
 
     usuario_actual = obtener_usuario_actual(request)
-
     user_id = (
         usuario_actual.id
         if usuario_actual is not None
@@ -503,9 +505,9 @@ def mostrar_detalle_perfume(request: Request, perfume_id: int,):
 
     puede_ver = (
         database_orm
-        .usuario_puede_ver_perfume(
-            perfume_id = perfume_id,
-            user_id = user_id,
+        .usuario_puede_ver_item(
+            item_id=item_id,
+            user_id=user_id,
         )
     )
 
@@ -516,26 +518,23 @@ def mostrar_detalle_perfume(request: Request, perfume_id: int,):
         )
 
     puede_modificar = False
-
     if usuario_actual is not None:
         puede_modificar = (
             database_orm
-            .usuario_es_propietario_del_perfume(
-                perfume_id = perfume_id,
+            .usuario_es_propietario_del_item(
+                item_id = item_id,
                 user_id = usuario_actual.id,
             )
         )
 
-    return templates.TemplateResponse(
-        request=request,
-        name="detalle.html",
-        context={
-            "perfume": perfume,
-            "puede_modificar": puede_modificar,
-        },
-    )
-
-
+        return templates.TemplateResponse(
+            request=request,
+            name="detalle.html",
+            context={
+                "item": item,
+                "puede_modificar": puede_modificar
+            },
+        )
 
 @app.get(
     "/agregar",
@@ -606,7 +605,7 @@ def agregar_perfume(
         imagen
     )
 
-    database_orm.agregar_perfume(
+    database_orm.agregar_item_coleccion(
         marca=marca.strip(),
         nombre=nombre.strip(),
         concentracion=concentracion,
@@ -623,66 +622,64 @@ def agregar_perfume(
 
 
 @app.get(
-    "/editar/{perfume_id}",
-    response_class = HTMLResponse,
+    "/editar/{item_id}",
+    response_class=HTMLResponse,
 )
-
 def mostrar_formulario_edicion(
-    request : Request,
-    perfume_id: int,
+    request: Request,
+    item_id: int,
 ):
     usuario_actual = requerir_usuario(request)
+
     if usuario_actual is None:
         return RedirectResponse(
             url="/login",
             status_code=303,
         )
 
-    perfume = requerir_propiedad_perfume(
-        perfume_id=perfume_id,
+    item = requerir_propiedad_item(
+        item_id=item_id,
         usuario_actual=usuario_actual,
     )
 
     return templates.TemplateResponse(
-        request = request,
-        name = "editar.html",
+        request=request,
+        name="editar.html",
         context={
-            "perfume": perfume,
+            "item": item,
+            "error": None,
         },
     )
 
 
-@app.post("/editar/{perfume_id}")
+@app.post("/editar/{item_id}")
 def editar_perfume(
     request: Request,
-    perfume_id: int,
-    marca: str = Form(...),
-    nombre: str = Form(...),
-    concentracion: str = Form(...),
+    item_id: int,
     tamano_ml: int = Form(...),
     fragrantica_url: str | None = Form(None),
     imagen: UploadFile | None = File(None),
     eliminar_imagen: bool = Form(False),
 ):
     """
-    Actualiza los datos de un perfume.
+    Actualiza los datos personales de un perfume
+    dentro de la colección del usuario.
 
-    También permite conservar, reemplazar
-    o eliminar su imagen.
+    La identidad global del perfume se conserva.
     """
 
     usuario_actual = requerir_usuario(request)
+
     if usuario_actual is None:
         return RedirectResponse(
             url="/login",
             status_code=303,
         )
 
-    perfume = requerir_propiedad_perfume(
-        perfume_id=perfume_id,
+    item = requerir_propiedad_item(
+        item_id=item_id,
         usuario_actual=usuario_actual,
     )
-    
 
     # Evitamos una acción contradictoria:
     # seleccionar una imagen nueva y pedir
@@ -692,21 +689,16 @@ def editar_perfume(
         and imagen is not None
         and imagen.filename
     ):
-        perfume_formulario = {
-            "id": perfume_id,
-            "marca": marca,
-            "nombre": nombre,
-            "concentracion": concentracion,
-            "tamano_ml": tamano_ml,
-            "fragrantica_url": fragrantica_url,
-            "imagen": perfume.imagen,
-        }
         return templates.TemplateResponse(
             request=request,
             name="editar.html",
             context={
-                "perfume": perfume_formulario,
-                "error":(
+                "item": item,
+                "tamano_ml_formulario": tamano_ml,
+                "fragrantica_url_formulario": (
+                    fragrantica_url or ""
+                ),
+                "error": (
                     "No podés seleccionar una imagen "
                     "nueva y eliminar la actual "
                     "al mismo tiempo."
@@ -715,12 +707,11 @@ def editar_perfume(
             status_code=400,
         )
 
-    
     enlace_normalizado = normalizar_url(
         fragrantica_url
     )
 
-    imagen_actual = perfume.imagen
+    imagen_actual = item.imagen
 
     # Por defecto conservamos la imagen anterior.
     imagen_final = imagen_actual
@@ -738,22 +729,20 @@ def editar_perfume(
         )
 
     actualizado = (
-        database_orm.actualizar_perfume(
-            perfume_id = perfume_id,
-            marca = marca.strip(),
-            nombre = nombre.strip(),
-            concentracion = concentracion,
-            tamano_ml = tamano_ml,
-            fragrantica_url = enlace_normalizado,
-            imagen = imagen_final,
-            user_id = usuario_actual.id,
+        database_orm.actualizar_item_coleccion(
+            item_id=item_id,
+            tamano_ml=tamano_ml,
+            fragrantica_url=enlace_normalizado,
+            imagen=imagen_final,
+            user_id=usuario_actual.id,
         )
     )
 
     if not actualizado:
-        raise HTTPException( status_code = 404, detail="No se pudo actualizar el perfume",)
-
-
+        raise HTTPException(
+            status_code=404,
+            detail="No se pudo actualizar el perfume",
+        )
 
     # Si quitamos la imagen anterior,
     # eliminamos también su archivo.
@@ -773,78 +762,82 @@ def editar_perfume(
         )
 
     return RedirectResponse(
-        url= (
-            f"/perfume/{perfume_id}"
+        url=(
+            f"/perfume/{item_id}"
             "?estado=editado"
         ),
         status_code=303,
     )
 
 @app.get(
-    "/eliminar/{perfume_id}",
-    response_class = HTMLResponse,
+    "/eliminar/{item_id}",
+    response_class=HTMLResponse,
 )
 def mostrar_confirmacion_eliminacion(
     request: Request,
-    perfume_id: int,
+    item_id: int,
 ):
     usuario_actual = requerir_usuario(request)
+
     if usuario_actual is None:
         return RedirectResponse(
             url="/login",
             status_code=303,
         )
 
-    perfume = requerir_propiedad_perfume(
-        perfume_id = perfume_id,
-        usuario_actual = usuario_actual,
+    item = requerir_propiedad_item(
+        item_id=item_id,
+        usuario_actual=usuario_actual,
     )
+
 
     return templates.TemplateResponse(
-        request = request,
-        name = "eliminar.html",
+        request=request,
+        name="eliminar.html",
         context={
-            "perfume" : perfume,
-        }
+            "item": item,
+        },
     )
 
-@app.post("/eliminar/{perfume_id}")
+
+@app.post("/eliminar/{item_id}")
 def procesar_eliminacion(
     request: Request,
-    perfume_id: int,
+    item_id: int,
 ):
     usuario_actual = requerir_usuario(request)
+
     if usuario_actual is None:
         return RedirectResponse(
             url="/login",
             status_code=303,
         )
-    
-    perfume = requerir_propiedad_perfume(
-        perfume_id = perfume_id,
-        usuario_actual = usuario_actual,
+
+    item = requerir_propiedad_item(
+        item_id=item_id,
+        usuario_actual=usuario_actual,
     )
-        
-    nombre_imagen = perfume.imagen
+
+    nombre_imagen = item.imagen
 
     eliminado = (
-        database_orm.eliminar_perfume(
-            perfume_id = perfume_id,
-            user_id = usuario_actual.id,
+        database_orm.eliminar_item_coleccion(
+            item_id=item_id,
+            user_id=usuario_actual.id,
         )
     )
 
     if not eliminado:
         raise HTTPException(
-            status_code = 404,
-            detail = "No se pudo eliminar el perfume",
+            status_code=404,
+            detail="No se pudo eliminar el perfume",
         )
 
     eliminar_imagen_local(nombre_imagen)
 
     return RedirectResponse(
-        url = "/?estado=eliminado",
-        status_code = 303,
+        url="/?estado=eliminado",
+        status_code=303,
     )
 
 @app.get(
@@ -1123,7 +1116,7 @@ def mostrar_perfil_usuario(request: Request, username: str):
     if es_perfil_propio:
         cantidad_perfumes = len(
             database_orm
-            .obtener_ids_perfumes_por_usuario(usuario.id)
+            .obtener_ids_items_por_usuario(usuario.id)
         )
 
     puede_ver_coleccion = (
@@ -1195,9 +1188,9 @@ def mostar_coleccion_usuario(request: Request, username: str):
             detail="Colección no disponible.",
         )
 
-    perfumes = (
+    items = (
         database_orm
-        .obtener_perfumes_por_coleccion(coleccion.id)
+        .obtener_items_por_coleccion(coleccion.id)
     )
 
     return templates.TemplateResponse(
@@ -1206,7 +1199,7 @@ def mostar_coleccion_usuario(request: Request, username: str):
         context={
             "usuario": usuario,
             "coleccion": coleccion,
-            "perfumes": perfumes,
+            "items": items,
             "es_propietario": es_propietario,
         },
     )

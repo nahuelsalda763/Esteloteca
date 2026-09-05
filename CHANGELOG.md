@@ -37,6 +37,9 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Modelo "CatalogPerfume" y tabla "catalog_perfumes".
 - Migración de Alembic que crea el catálogo y migra los perfumes existentes.
 - VIsta pública "/catalogo" con búsqueda por marca, nombre o concentracion.
+- Modelo "CollectionItem" para representar la pertenencia de un perfume global a una colección.
+- Migración de Alembic que transforma los registros personales existentes en "collection_items" preservando IDS, tamaños e imagenes.
+
 
 
 
@@ -54,10 +57,18 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - Los perfiles públicos enlazan la colección únicamente cuando está marcada como pública.
 - El detalle de perfumes respeta la visibilidad de la colección: EL propietario puede verlo siempre y los terceros solo cuando es pública.
 - El alta de un perfume mantiene sincronizada su identidad dentro del catálogo global sin duplicar entradas equivalentes.
+- "Perfume pasa a representar la identidad global compartida del catálogo, raspaldada por la tabla "catalog_perfumes".
+- Las colecciones, busquedas, detalles y operaciones CRUD trabajan sobre "COllectionItem" relacionado con "perfume"
+- La edicion personal modifica tamaño e imagen sin reescribir marca, nombre o concentración globales.
+- Enlace a Fragrantica ausente puede completarse desde una colección y queda reflejado en el perfume global.
+- Eliminar un perfume de la colección ya no elimina su identidad del catálogo global.
+
 ### Corregido
 
 - Collection.created_at deja de actualizarse al modificar la colección. Los cambios continuúan registrándose por update_at.
 - Corrección del cacheo de css y js de la PWA para que los cambios de la interfaz se actualicen sin requerir recargas forzadas. 
+- Se elimina durante el refactor el tipo "collection_id" presente en el alta de la etapa 12.
+- CSS para visualización en dispositivos móviles.
 
 ### En desarrollo
 

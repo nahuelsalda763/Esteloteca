@@ -94,17 +94,14 @@ class Collection(Base):
 
     owner: Mapped["User"] = relationship(back_populates="collections")
 
-    perfumes: Mapped[list["Perfume"]] = relationship(back_populates="collection")
-    
+    items: Mapped[list["CollectionItem"]] = relationship (back_populates="collection")
 
-class CatalogPerfume(Base):
+class Perfume(Base):
     __tablename__ = "catalog_perfumes"
-    __table_args__ = (
-        UniqueConstraint(
-            "catalog_key",
-            name="uq_catalog_perfumes_catalog_key",
-        ),
-    )
+    __table_args__ = UniqueConstraint(
+        "catalog_key",
+        name="uq_catalog_perfumes_catalog_key",
+    ),
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
@@ -119,24 +116,40 @@ class CatalogPerfume(Base):
     fragrantica_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone = True),
+        DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,
     )
 
+    collection_items: Mapped[list["CollectionItem"]] = relationship(back_populates="perfume")
 
+class CollectionItem(Base):
+    __tablename__ = "collection_items"
 
-class Perfume(Base):
-    __tablename__ = "perfumes"
     id: Mapped[int] = mapped_column(primary_key=True)
-    collection_id: Mapped[int] = mapped_column(ForeignKey("collections.id"), nullable=False)
 
-    marca: Mapped[str]
-    nombre: Mapped[str]
-    concentracion: Mapped[str]
-    tamano_ml: Mapped[int]
-    fragrantica_url: Mapped[str | None]
-    imagen: Mapped[str | None]
+    collection_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "collections.id",
+            name="fk_collection_items_collection_id_collections",
+        ),
+        nullable=False,
+        index=True,
+    )
 
-    collection: Mapped["Collection"] = relationship(back_populates="perfumes")
-    
+    perfume_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "catalog_perfumes.id",
+            name="fk_collection_items_perfume_id_catalog_perfumes",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    tamano_ml: Mapped[int] = mapped_column(nullable=False)
+
+    imagen: Mapped[str | None] = mapped_column(nullable=True)
+
+    collection: Mapped["Collection"] = relationship(back_populates="items")
+
+    perfume: Mapped["Perfume"] = relationship(back_populates="collection_items")

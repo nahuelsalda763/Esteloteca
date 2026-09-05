@@ -12,7 +12,7 @@
 
             <p>
                 Colección de @{{ usuario.username }}
-                · {{ perfumes | length }} perfumes
+                · {{ items | length }} perfumes
             </p>
         </div>
 
@@ -71,16 +71,16 @@
         class="coleccion"
         aria-label="Colección de perfumes"
     >
-        {% if perfumes %}
+        {% if items %}
 
-            {% for perfume in perfumes %}
+            {% for item in items %}
             <article class="tarjeta-perfume">
                 <div class="imagen-perfume">
-                    {% if perfume.imagen %}
+                    {% if item.imagen %}
                     <img
                         class="foto-perfume"
-                        src="/uploads/perfumes/{{ perfume.imagen }}"
-                        alt="Frasco de {{ perfume.marca }} {{ perfume.nombre }}"
+                        src="/uploads/perfumes/{{ item.imagen }}"
+                        alt="Frasco de {{ item.perfume.marca }} {{ item.perfume.nombre }}"
                     >
                     {% else %}
                     <span>Sin imagen</span>
@@ -89,31 +89,31 @@
 
                 <div class="informacion-perfume">
                     <p class="marca">
-                        {{ perfume.marca }}
+                        {{ item.perfume.marca }}
                     </p>
 
                     <h2>
-                        {{ perfume.nombre }}
+                        {{ item.perfume.nombre }}
                     </h2>
 
                     <p>
-                        {{ perfume.concentracion }}
+                        {{ item.perfume.concentracion }}
                     </p>
 
                     <p>
-                        {{ perfume.tamano_ml }} ml
+                        {{ item.tamano_ml }} ml
                     </p>
 
                     <div class="acciones-tarjeta">
                         <a
                             class="boton boton-detalle"
-                            href="/perfume/{{ perfume.id }}"
+                            href="/perfume/{{ item.id }}"
                         >
                             Ver detalle
                         </a>
 
                         {% set url_fragrantica =
-                            perfume.fragrantica_url
+                            item.perfume.fragrantica_url
                             | default('', true)
                             | trim
                         %}

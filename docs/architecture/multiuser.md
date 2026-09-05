@@ -363,8 +363,18 @@ Etapa 11 - Vista pública de colección y bienvenida
 Etapa 12 - Catálogo global de perfumes
 Etapa 13 - Separación definitiva entre Perfume y CollectionItem
 ```
-
-Durante la Etapa 12, CatalogPerfume representa temporalmente la identidad global compartida mientras Perfume continúa representando una entrada concreta dentro de una colección. La etapa 13 realizara la separación definitiva hacia CollectionItem + Perfume global, una vez validado el catalogo y perservados los datos existentes.
+A partir de la Etapa 13, `Perfume` representa la identidad global compartida
+del catálogo y `CollectionItem` representa la pertenencia de ese perfume a una
+colección concreta. La clase `Perfume` continúa respaldada por la tabla
+`catalog_perfumes` para evitar un renombrado de tabla innecesario durante una
+migración de datos de alto riesgo.
+La relación efectiva queda:
+```text
+User → Collection → CollectionItem → Perfume
+```
+Los datos globales no se duplican entre usuarios. Tamaño e imagen permanecen
+en `CollectionItem`, mientras que marca, nombre, concentración y referencia
+general pertenecen a `Perfume`.
 
 
 ---

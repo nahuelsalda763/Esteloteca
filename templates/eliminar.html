@@ -1,90 +1,57 @@
 {% extends "base.html" %}
 
-
 {% block title %}
     Eliminar perfume | Esteloteca
 {% endblock %}
 
-
 {% block content %}
+<header class="encabezado">
+    <div class="contenedor">
+        <h1>Eliminar perfume</h1>
+        <p>Confirmá que deseas eliminarlo de tu colección. </p>
+    </div>
+</header>
 
-    <header class="encabezado">
-        <div class="contenedor">
-            <h1>Eliminar perfume</h1>
+<main class="contenedor">
+    <section class="confirmacion-eliminar">
+        <div class="resumen-perfume-eliminar">
+            <div class="imagen-eliminar">
+                {% if item.imagen %}
+                <img
+                    class="foto-perfume"
+                    src="/uploads/perfumes/{{ item.imagen }}"
+                    alt="Frasco de {{ item.perfume.marca }} {{ item.perfume.nombre }}"
+                >
+                {% else %}
+                <span>Sin imagen</span>
+                {% endif %}
+            </div>
 
+            <div>
+                <p class="marca">{{ item.perfume.marca }}</p>
+                <h2>{{ item.perfume.nombre }}</h2>
+                <p>{{ item.perfume.concentracion }} </p>
+                <p>{{ item.tamano_ml }}</p>
+            </div>
+        </div>
+
+        <div class="mensaje-advertencia" role="alert">
+            <strong>Esta acción quita el perfume de tu colección.</strong>
             <p>
-                Confirmá que querés eliminar este perfume.
+                Se eliminará este registro personal y su imagen.
+                El perfume seguirá existiendo en el catálogo global.
             </p>
         </div>
-    </header>
 
-    <main class="contenedor">
-        <section class="confirmacion-eliminar">
-            <div class="resumen-perfume-eliminar">
-                <div class="imagen-eliminar">
-                    {% if perfume.imagen %}
-                        <img
-                            class="foto-perfume"
-                            src="/uploads/perfumes/{{ perfume.imagen }}"
-                            alt="Frasco de {{ perfume.marca }} {{ perfume.nombre }}"
-                        >
-                    {% else %}
-                        <span>Sin imagen</span>
-                    {% endif %}
-                </div>
+        <form
+            class="acciones-eliminar"
+            action="/eliminar/{{ item.id }}"
+            method="post"
+        >
+            <button class="boton boton-peligro" type="submit">Sí, quitar de mi colección</button>
+            <a class="boton boton-secundario" href="/">No, volver a la colección</a>
+        </form>
+    </section>
+</main>
 
-                <div>
-                    <p class="marca">
-                        {{ perfume.marca }}
-                    </p>
-
-                    <h2>
-                        {{ perfume.nombre }}
-                    </h2>
-
-                    <p>
-                        {{ perfume.concentracion }}
-                    </p>
-
-                    <p>
-                        {{ perfume.tamano_ml }} ml
-                    </p>
-                </div>
-            </div>
-
-            <div
-                class="mensaje-advertencia"
-                role="alert"
-            >
-                <strong>
-                    Esta acción no se puede deshacer.
-                </strong>
-
-                <p>
-                    Se eliminarán el perfume y su imagen
-                    guardada en la aplicación.
-                </p>
-            </div>
-
-            <form
-                class="acciones-eliminar"
-                action="/eliminar/{{ perfume.id }}"
-                method="post"
-            >
-                <button
-                    class="boton boton-peligro"
-                    type="submit"
-                >
-                    Sí, eliminar perfume
-                </button>
-
-                <a
-                    class="boton boton-secundario"
-                    href="/"
-                >
-                    No, volver a la colección
-                </a>
-            </form>
-        </section>
-    </main>
 {% endblock %}
