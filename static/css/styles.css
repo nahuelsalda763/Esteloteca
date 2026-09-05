@@ -883,3 +883,52 @@ body {
     border: 1px solid #9bc5a0;
     border-radius: 8px;
 }
+
+/* =========================
+   RESPONSIVE FINAL
+   ========================= */
+
+@media (max-width: 550px) {
+    .detalle-perfume {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        width: 100%;
+        max-width: 100%;
+        margin: 24px auto;
+        padding: 20px;
+    }
+
+    .detalle-imagen {
+        width: 100%;
+        min-height: 220px;
+        max-height: 360px;
+    }
+
+    .detalle-imagen img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: 360px;
+        padding: 12px;
+        object-fit: contain;
+    }
+
+    .detalle-informacion {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .detalle-informacion h2 {
+        font-size: 1.6rem;
+        overflow-wrap: anywhere;
+    }
+
+    .acciones-detalle {
+        width: 100%;
+    }
+
+    .acciones-detalle .boton {
+        width: 100%;
+        margin: 0;
+    }
+}
