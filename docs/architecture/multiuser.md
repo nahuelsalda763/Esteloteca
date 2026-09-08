@@ -362,22 +362,21 @@ Etapa 10 — Colecciones públicas y privadas
 Etapa 11 - Vista pública de colección y bienvenida
 Etapa 12 - Catálogo global de perfumes
 Etapa 13 - Separación definitiva entre Perfume y CollectionItem
+Etapa 14 - Identidad global desde la Etapa 14
 ```
-A partir de la Etapa 13, `Perfume` representa la identidad global compartida
-del catálogo y `CollectionItem` representa la pertenencia de ese perfume a una
-colección concreta. La clase `Perfume` continúa respaldada por la tabla
-`catalog_perfumes` para evitar un renombrado de tabla innecesario durante una
-migración de datos de alto riesgo.
-La relación efectiva queda:
-```text
-User → Collection → CollectionItem → Perfume
-```
-Los datos globales no se duplican entre usuarios. Tamaño e imagen permanecen
-en `CollectionItem`, mientras que marca, nombre, concentración y referencia
-general pertenecen a `Perfume`.
+La identidad compartida de un perfume se determina únicamente por:
+
+- marca;
+- nombre;
+- concentración;
+
+La comparación normaliza Unicode, espacios y mayúsculas/minúsculas. EL tamaño en mililitros no forma parte de la identidad global y permanece en "CollectionItem".
+
+Por lo tanto, dos tamaños distintos del mismo perfume pueden pertenecer a una o varias colecciones apuntando al mismo "perfume" global. Una concentración distinta representa una identidad diferente
+
+La corrección de errores ortográficos, las sugerencias de nombres y la normalización semántica de abreviaturas se tratarán en etapas posteriores para evitar fusionar automáticamente perfumes que realmente sean distintos.
 
 
----
 
 ## Principio de desarrollo
 

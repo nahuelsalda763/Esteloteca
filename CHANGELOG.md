@@ -62,6 +62,9 @@ Todos los cambios importantes realizados en Esteloteca se documentarán en este 
 - La edicion personal modifica tamaño e imagen sin reescribir marca, nombre o concentración globales.
 - Enlace a Fragrantica ausente puede completarse desde una colección y queda reflejado en el perfume global.
 - Eliminar un perfume de la colección ya no elimina su identidad del catálogo global.
+- Se reforzó la identidad global del catálogo para basarse exclusivamente en marca, nombre y concentración.
+- Se normalizo Unicode, espacios y mayúsculas/minúsculas sin incluir el tamaño en la identidad global.
+- Se incorporaron pruebas y una auditoría de consistencia para prevenir regresiones y detectar colisiones del catálogo.
 
 ### Corregido
 

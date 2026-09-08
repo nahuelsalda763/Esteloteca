@@ -11,17 +11,18 @@ engine = create_engine(
     DATABASE_URL,
 )
 
-
-def normalizar_valor_catalogo(valor: str) -> str:
+def limpiar_valor_catalogo(valor:str) -> str:
     texto = unicodedata.normalize("NFKC", valor)
-    texto = " ".join(texto.strip().split())
-    return texto.casefold()
+    return " ".join(texto.strip().split())
 
+
+def normalizar_valor_catalogo(valor:str) -> str:
+    return limpiar_valor_catalogo(valor).casefold()
 
 def crear_clave_catalogo(
-    marca: str,
-    nombre: str,
-    concentracion: str,
+        marca: str,
+        nombre: str,
+        concentracion: str,
 ) -> str:
     return "|".join(
         (
@@ -244,20 +245,22 @@ def obtener_ids_items_por_usuario(user_id: int) -> set[int]:
     with Session(engine) as session:
         return set(session.scalars(sentencia).all())
 
-
 def agregar_item_coleccion(
-    marca: str,
-    nombre: str,
-    concentracion: str,
-    tamano_ml: int,
-    fragrantica_url: str | None,
-    imagen: str | None,
-    collection_id: int,
+        marca: str,
+        nombre: str,
+        concentracion: str,
+        tamano_ml: int,
+        fragrantica_url: str | None,
+        imagen: str | None,
+        collection_id: int,
 ) -> int:
+    marca_limpia = limpiar_valor_catalogo(marca)
+    nombre_limpio = limpiar_valor_catalogo(nombre)
+    concentracion_limpia = limpiar_valor_catalogo(concentracion)
     catalog_key = crear_clave_catalogo(
-        marca,
-        nombre,
-        concentracion,
+        marca_limpia,
+        nombre_limpio,
+        concentracion_limpia,
     )
 
     with Session(engine) as session:
@@ -268,26 +271,26 @@ def agregar_item_coleccion(
 
         if perfume_global is None:
             perfume_global = Perfume(
-                marca=marca.strip(),
-                nombre=nombre.strip(),
-                concentracion=concentracion.strip(),
+                marca=marca_limpia,
+                nombre=nombre_limpio,
+                concentracion=concentracion_limpia,
                 catalog_key=catalog_key,
                 fragrantica_url=fragrantica_url,
             )
+
             session.add(perfume_global)
             session.flush()
 
-        elif (
-            not perfume_global.fragrantica_url
-            and fragrantica_url
-        ):
+        elif not perfume_global.fragrantica_url and fragrantica_url:
+
             perfume_global.fragrantica_url = fragrantica_url
 
+
         item = CollectionItem(
-            collection_id=collection_id,
-            perfume_id=perfume_global.id,
-            tamano_ml=tamano_ml,
-            imagen=imagen,
+            collection_id = collection_id,
+            perfume_id = perfume_global.id,
+            tamano_ml = tamano_ml,
+            imagen = imagen,
         )
 
         session.add(item)
